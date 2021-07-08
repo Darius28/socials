@@ -75,3 +75,7 @@
 .thought-icon:hover {
   cursor: pointer;
 }
+
+.menu-search:focus {
+  outline: none;
+}

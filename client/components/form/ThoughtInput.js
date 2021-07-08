@@ -10,7 +10,7 @@ import { Collection, EmojiSmile } from "react-bootstrap-icons";
 
 export default function ThoughtInput() {
   return (
-    <div>
+    <div style={{borderBottom: "1px solid rgb(204, 204, 204)"}}>
       <div className="row">
         <div className="col d-flex">
           <div>
@@ -57,6 +57,9 @@ export default function ThoughtInput() {
             <Tooltip title="Schedule" placement="bottom">
               <CalendarOutlined style={{ fontSize: "24px" }} />
             </Tooltip>
+          </div>
+          <div className="ms-auto mb-3">
+            <buttoon className="btn btn-primary">Post</buttoon>
           </div>
         </div>
       </div>
