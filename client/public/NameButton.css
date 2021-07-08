@@ -1,0 +1,11 @@
+.name-button {
+  border-radius: 0.5rem;
+  border-color: #053742;
+  color: #053742;
+  background-color: #e8f0f2;
+  min-width: 4rem;
+}
+
+.name-button:hover {
+    opacity: 0.9;
+}

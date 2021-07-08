@@ -1,0 +1,77 @@
+/* .landing-container {
+  display: flex;
+  flex-direction: column;
+  height: 92vh;
+  background-color: #a2dbfa;
+  justify-content: center;
+  align-items: center;
+  line-height: 150%;
+}
+
+.landing-container__welcome {
+  display: flex;
+}
+
+.landing-container__signup {
+  border-radius: 0.5rem;
+  border-color: #a2dbfa;
+  width: 20%;
+  margin-top: 3rem;
+  background-color: #053742;
+  color: #e8f0f2;
+  height: 3rem;
+}
+
+.landing-container__login {
+  border-radius: 0.5rem;
+  border-color: #a2dbfa;
+  margin-top: 2rem;
+  width: 20%;
+  background-color: #e8f0f2;
+  color: #053742;
+  height: 3rem;
+}
+
+.landing-container__signup:hover, .landing-container__login:hover {
+    opacity: 0.9;
+} */
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+.home-button {
+  border-radius: 0.5rem;
+  border-color: #e8f0f2;
+  color: #e8f0f2;
+  background-color: #39a2db;
+  padding: 0.6rem;
+}
+
+.home-button:hover {
+    opacity: 0.9;
+}
+
+.thought-input {
+  border: none;
+  margin-left: 0.5rem;
+}
+
+.thought-input:focus {
+  outline: none;
+}
+
+.thought-icon {
+  margin-right: 0.3rem;
+  margin-left: 0.3rem;
+}
+
+.thought-icon:hover {
+  cursor: pointer;
+}

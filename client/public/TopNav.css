@@ -1,0 +1,66 @@
+.nav-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #053742;
+  height: 3.5rem;
+  width: 100%;
+}
+
+.top-nav-padding {
+  height: 3.5rem;
+}
+
+.nav-container {
+  justify-content: space-around;
+  display: flex;
+  color: #e8f0f2;
+  align-items: center;
+  height: 3.5rem;
+}
+
+.nav-logo {
+  display: flex;
+  width: 33%;
+  justify-content: center;
+}
+
+.nav-name {
+  font-size: 2rem;
+  display: flex;
+  width: 33%;
+  justify-content: center;
+  letter-spacing: 0.1rem;
+}
+
+.nav-items {
+  display: flex;
+  width: 33%;
+  justify-content: space-evenly;
+  height: 2rem;
+}
+
+.nav-signup {
+  border-radius: 0.5rem;
+  background-color: #39a2db;
+  color: #e8f0f2;
+  border-color: #053742;
+  width: 20%;
+  min-width: 4rem;
+}
+
+.nav-login {
+  border-radius: 0.5rem;
+  border-color: #053742;
+  color: #39a2db;
+  background-color: #e8f0f2;
+  width: 20%;
+  min-width: 4rem;
+}
+
+.nav-signup:hover,
+.nav-login:hover {
+  opacity: 0.9;
+}
+
+
