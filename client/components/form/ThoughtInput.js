@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Avatar, Tooltip } from "antd";
 import {
   UserOutlined,
@@ -8,9 +8,9 @@ import {
 } from "@ant-design/icons";
 import { Collection, EmojiSmile } from "react-bootstrap-icons";
 
-export default function ThoughtInput() {
+export default function ThoughtInput({ handleSubmit, thoughtRef }) {
   return (
-    <div style={{borderBottom: "1px solid rgb(204, 204, 204)"}}>
+    <div style={{ borderBottom: "1px solid rgb(204, 204, 204)" }}>
       <div className="row">
         <div className="col d-flex">
           <div>
@@ -21,6 +21,7 @@ export default function ThoughtInput() {
             cols="30"
             className="thought-input"
             placeholder="What's on your mind?"
+            ref={thoughtRef}
           />
         </div>
       </div>
@@ -59,7 +60,9 @@ export default function ThoughtInput() {
             </Tooltip>
           </div>
           <div className="ms-auto mb-3">
-            <buttoon className="btn btn-primary">Post</buttoon>
+            <button className="btn btn-primary" onClick={handleSubmit}>
+              Post
+            </button>
           </div>
         </div>
       </div>

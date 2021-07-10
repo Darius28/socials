@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ThoughtInput from "../components/form/ThoughtInput";
 import News from "../components/layout/News";
+import YourPosts from "../components/layout/YourPosts";
+import FeedHandler from "../components/handler/FeedHandler";
 
 export default function Home() {
+  
+
   return (
     <div className="d-flex" style={{ minHeight: "75vh" }}>
       <div
@@ -11,7 +16,7 @@ export default function Home() {
       >
         <div className="row">
           <div className="col">
-            <ThoughtInput />
+            <FeedHandler />
           </div>
         </div>
       </div>

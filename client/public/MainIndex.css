@@ -79,3 +79,9 @@
 .menu-search:focus {
   outline: none;
 }
+
+.post-card {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}

@@ -13,6 +13,7 @@ export default function TabsForYou() {
     >
       <div style={{ borderBottom: "1px solid rgb(204, 204, 204)", padding: "0.6rem" }}>
         <h4 style={{ marginBottom: "0" }}>What's Happening</h4>
+        
       </div>
     </div>
   );
