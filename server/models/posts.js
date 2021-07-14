@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 const { ObjectId } = Schema;
 
-const postSchema = new Schema(
+export const postSchema = new Schema(
   {
     userId: {
       type: ObjectId,

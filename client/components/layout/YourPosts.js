@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "../section/Card";
 
-export default function YourPosts({ allPosts, setAllPosts, name, setName }) {
+export default function YourPosts({ allPosts, name }) {
   return (
     <div>
       {allPosts.length === 0 ? (

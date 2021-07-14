@@ -13,15 +13,15 @@ export default function FeedHandler() {
     const { data } = await axios.get("/api/get-posts");
     // console.log(data);
     setAllPosts(data.posts);
-    toast("Post Successful.")
+    toast("Post Successful.");
   };
 
   const handleSubmit = async () => {
     try {
       const thought = thoughtRef.current.value;
-    //   console.log(thought);
+      //   console.log(thought);
       const { data } = await axios.post("/api/post-new-post", { thought });
-      thoughtRef.current.value = ""
+      thoughtRef.current.value = "";
       reloadData();
     } catch (err) {
       toast(err.response.data);
@@ -39,12 +39,7 @@ export default function FeedHandler() {
   return (
     <>
       <ThoughtInput handleSubmit={handleSubmit} thoughtRef={thoughtRef} />
-      <YourPosts
-        allPosts={allPosts}
-        setAllPosts={setAllPosts}
-        name={name}
-        setName={setName}
-      />
+      <YourPosts allPosts={allPosts} name={name} />
     </>
   );
 }

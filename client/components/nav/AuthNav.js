@@ -51,6 +51,10 @@ export default function AuthNav() {
     }
   };
 
+  const profilePush = () => {
+    router.push(`/profile/${state.user._id}/posts`);
+  };
+
   return (
     <Menu
       onClick={handleClick}
@@ -78,7 +82,10 @@ export default function AuthNav() {
       {state.user && (
         <>
           <SubMenu title={nameTitle}>
-            <Item icon={<ProfileOutlined />}>Profile</Item>
+            <Item icon={<ProfileOutlined />} onClick={profilePush}>
+              Profile
+            </Item>
+
             <Item
               icon={<LogoutOutlined />}
               onClick={logoutHandler}

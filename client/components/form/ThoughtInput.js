@@ -18,7 +18,7 @@ export default function ThoughtInput({ handleSubmit, thoughtRef }) {
           </div>
           <textarea
             rows="3"
-            cols="30"
+            cols="45"
             className="thought-input"
             placeholder="What's on your mind?"
             ref={thoughtRef}

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import { postSchema } from "./posts";
 
 const userSchema = new Schema(
   {
@@ -19,6 +20,15 @@ const userSchema = new Schema(
       min: 6,
       max: 64,
       required: true,
+    },
+    bio: {
+      type: String,
+    },
+    website: {
+      type: String,
+    },
+    posts: {
+      type: [postSchema],
     },
   },
   { timestamps: true }
