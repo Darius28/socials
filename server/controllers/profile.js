@@ -1,5 +1,6 @@
 import User from "../models/user";
 import AWS from "aws-sdk";
+import { nanoid } from "nanoid";
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -32,6 +33,41 @@ export const getProfileDetails = async (req, res) => {
     //   console.log("req.user", req.user)
     const user = await User.findById(req.user.id).select("-password").exec();
     return res.send(user);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const uploadProfilePic = async (req, res) => {
+  try {
+    const { image } = req.body;
+    if (!image) {
+      return res.status(400).send("No image found.");
+    }
+    const base64Data = new Buffer.from(
+      image.replace(/^data:image\/\w+;base64,/, ""),
+      "base64"
+    );
+
+    const type = image.split(";")[0].split("/")[1];
+
+    const params = {
+      Bucket: "socials-2828",
+      Key: `${nanoid()}.${type}`,
+      Body: base64Data,
+      ACL: "public-read",
+      ContentEncoding: "base64",
+      ContentType: `image/${type}`,
+    };
+
+    S3.upload(params, (err, data) => {
+      if (err) {
+        console.log(err);
+        return res.sendStatus(400);
+      }
+      console.log(data);
+      res.send(data);
+    });
   } catch (err) {
     console.log(err);
   }

@@ -29,12 +29,17 @@ export default function AuthNav() {
     process.browser && setCurrent(window.location.pathname);
   }, [process.browser && window.location.pathname]);
 
+  console.log("STATEEEEEE: ", state)
+
   const nameTitle = state.user ? (
     <>
+      {/* <Avatar size={40} src={state.profilePic} /> {state.user.name} */}
       <Avatar size={40} icon={<UserOutlined />} /> {state.user.name}
     </>
   ) : (
-    <></>
+    <>
+      {/* <Avatar size={40} icon={<UserOutlined />} /> {state.user.name} */}
+    </>
   );
 
   const logoutHandler = async () => {
@@ -82,7 +87,7 @@ export default function AuthNav() {
       {state.user && (
         <>
           <SubMenu title={nameTitle}>
-            {state.user.profile_pic ? (
+            {/* {state.user.profile_pic ? (
               <Avatar icon={<LoginOutlined />} onClick={profilePush}>
                 Profile
               </Avatar>
@@ -90,8 +95,11 @@ export default function AuthNav() {
               <Avatar icon={<ProfileOutlined />} onClick={profilePush}>
                 Profile
               </Avatar>
-            )}
+            )} */}
 
+            <Item icon={<ProfileOutlined />} onClick={profilePush}>
+              Profile
+            </Item>
             <Item
               icon={<LogoutOutlined />}
               onClick={logoutHandler}

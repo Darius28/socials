@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { Avatar, Menu, Modal } from "antd";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import Likes from "../../../components/UserProfile/Likes";
 import { toast } from "react-toastify";
 import { LinkOutlined, UserOutlined, CameraOutlined } from "@ant-design/icons";
 import ProfileEditModal from "../../../components/section/ProfileEditModal";
+import Resizer from "react-image-file-resizer";
 
 const { Item } = Menu;
 
@@ -33,6 +34,7 @@ export default function UserProfile() {
   const [current, setCurrent] = useState("posts");
   const currentPath = router.query.route;
   const [comp, setComp] = useState({});
+  const [profilePicFileObj, setProfilePicFileObj] = useState({});
 
   const [imgPreview, setImgPreview] = useState();
 
@@ -44,7 +46,7 @@ export default function UserProfile() {
 
     const getUserProfileDetails = async () => {
       const { data } = await axios.get("/api/profile/get-profile-details");
-      // console.log(data);
+      console.log(data);
       setEditName(data.name);
       setEditBio(data.bio);
       setEditWebsite(data.website);
@@ -105,7 +107,7 @@ export default function UserProfile() {
     setIsModalVisible(true);
   };
 
-  const handleOk = async () => {
+  const handleOk = async (e) => {
     setConfirmLoading(true);
     const name = editName;
     const bio = editBio;
@@ -120,6 +122,25 @@ export default function UserProfile() {
       return;
     }
 
+    Resizer.imageFileResizer(
+      profilePicFileObj,
+      720,
+      500,
+      "JPEG",
+      100,
+      0,
+      async (uri) => {
+        try {
+          const { data } = await axios.post("/api/profile/upload-profile-pic", {
+            image: uri,
+          });
+          console.log("IMG UPLOADED: ", data.Location);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
+
     const { data } = await axios.post(
       `/api/profile/${userId}/complete-profile`,
       {
@@ -130,20 +151,18 @@ export default function UserProfile() {
     );
 
     setNewProfileValues();
-
     setConfirmLoading(false);
     setIsModalVisible(false);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setImgPreview("")
+    setImgPreview("");
   };
 
   const handleImage = (e) => {
-    const file = e.target.files[0];
-    setImgPreview(window.URL.createObjectURL(file));
-
+    setImgPreview(window.URL.createObjectURL(e.target.files[0]));
+    setProfilePicFileObj(e.target.files[0]);
   };
 
   return (
