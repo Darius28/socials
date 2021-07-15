@@ -25,6 +25,7 @@ export default function Login() {
         payload: data,
       });
       localStorage.setItem("user", JSON.stringify(data));
+      console.log(data)
       toast.success("Welcome.");
       router.replace("/home");
     } catch (err) {
@@ -44,6 +45,7 @@ export default function Login() {
               name="email"
               className="form-control"
               ref={emailRef}
+              autoFocus
             />
           </div>
 

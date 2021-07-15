@@ -40,6 +40,7 @@ export default function Signup() {
               name="name"
               className="form-control"
               ref={nameRef}
+              autoFocus
             />
           </div>
 

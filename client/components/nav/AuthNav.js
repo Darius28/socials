@@ -82,9 +82,15 @@ export default function AuthNav() {
       {state.user && (
         <>
           <SubMenu title={nameTitle}>
-            <Item icon={<ProfileOutlined />} onClick={profilePush}>
-              Profile
-            </Item>
+            {state.user.profile_pic ? (
+              <Avatar icon={<LoginOutlined />} onClick={profilePush}>
+                Profile
+              </Avatar>
+            ) : (
+              <Avatar icon={<ProfileOutlined />} onClick={profilePush}>
+                Profile
+              </Avatar>
+            )}
 
             <Item
               icon={<LogoutOutlined />}

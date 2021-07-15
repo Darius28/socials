@@ -30,6 +30,7 @@ const userSchema = new Schema(
     posts: {
       type: [postSchema],
     },
+    profile_pic: {}
   },
   { timestamps: true }
 );

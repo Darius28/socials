@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Avatar, Menu, Modal } from "antd";
 import Link from "next/link";
@@ -6,11 +6,27 @@ import YourPosts from "../../../components/layout/YourPosts";
 import axios from "axios";
 import Replies from "../../../components/UserProfile/replies";
 import Likes from "../../../components/UserProfile/Likes";
+import { toast } from "react-toastify";
+import { LinkOutlined, UserOutlined, CameraOutlined } from "@ant-design/icons";
+import ProfileEditModal from "../../../components/section/ProfileEditModal";
 
 const { Item } = Menu;
 
+const isValidUrl = (website) => {
+  const regexp =
+    /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+  if (regexp.test(website)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export default function UserProfile() {
-  const [name, setName] = useState("");
+  const [editName, setEditName] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [editWebsite, setEditWebsite] = useState("");
+  const [profile, setProfile] = useState({});
   const router = useRouter();
   const { userId } = router.query;
   const [allPosts, setAllPosts] = useState([]);
@@ -18,13 +34,24 @@ export default function UserProfile() {
   const currentPath = router.query.route;
   const [comp, setComp] = useState({});
 
+  const [imgPreview, setImgPreview] = useState();
+
   useEffect(() => {
     const getAllPosts = async () => {
       const { data } = await axios.get("/api/get-posts");
       setAllPosts(data.posts);
-      setName(data.name);
+    };
+
+    const getUserProfileDetails = async () => {
+      const { data } = await axios.get("/api/profile/get-profile-details");
+      // console.log(data);
+      setEditName(data.name);
+      setEditBio(data.bio);
+      setEditWebsite(data.website);
+      setProfile(data);
     };
     getAllPosts();
+    getUserProfileDetails();
   }, []);
 
   useEffect(() => {
@@ -33,6 +60,12 @@ export default function UserProfile() {
 
   const handleClick = (e) => {
     setCurrent(e.key);
+  };
+
+  const setNewProfileValues = async () => {
+    const { data } = await axios.get("/api/profile/get-profile-details");
+    setProfile(data);
+    toast("Profile Updated.");
   };
 
   const navRoutes = [
@@ -74,11 +107,29 @@ export default function UserProfile() {
 
   const handleOk = async () => {
     setConfirmLoading(true);
-    const name = editNameRef.current.value;
-    const bio = editBioRef.current.value;
-    const website = editWebsiteRef.current.value;
+    const name = editName;
+    const bio = editBio;
+    const website = editWebsite;
 
-    console.log(name, bio, website);
+    const urlValid = isValidUrl(website);
+    console.log(urlValid);
+
+    if (!urlValid) {
+      setConfirmLoading(false);
+      toast.error("Invalid Website.");
+      return;
+    }
+
+    const { data } = await axios.post(
+      `/api/profile/${userId}/complete-profile`,
+      {
+        name,
+        bio,
+        website,
+      }
+    );
+
+    setNewProfileValues();
 
     setConfirmLoading(false);
     setIsModalVisible(false);
@@ -86,41 +137,31 @@ export default function UserProfile() {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setImgPreview("")
   };
 
-  const editNameRef = useRef();
-  const editBioRef = useRef();
-  const editWebsiteRef = useRef();
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    setImgPreview(window.URL.createObjectURL(file));
+
+  };
 
   return (
     <div className="container">
-      <Modal
-        title="Edit Profile"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
+      <ProfileEditModal
+        isModalVisible={isModalVisible}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
         confirmLoading={confirmLoading}
-        okText="Submit"
-      >
-        <form>
-          <div className="mb-3">
-            <label>Name: </label>
-            <input type="text" ref={editNameRef} className="form-control" />
-          </div>
-          <div className="mb-3">
-            <label>Bio: </label>
-            <textarea
-              ref={editBioRef}
-              className="form-control"
-              style={{ resize: "none" }}
-            />
-          </div>
-          <div className="mb-3">
-            <label>Website: </label>
-            <input type="text" ref={editWebsiteRef} className="form-control" />
-          </div>
-        </form>
-      </Modal>
+        editName={editName}
+        editBio={editBio}
+        editWebsite={editWebsite}
+        setEditName={setEditName}
+        setEditBio={setEditBio}
+        setEditWebsite={setEditWebsite}
+        handleImage={handleImage}
+        imgPreview={imgPreview}
+      />
       <div className="d-flex" style={{ padding: "1.5rem" }}>
         <div className="profile-container" className="me-auto">
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -131,15 +172,29 @@ export default function UserProfile() {
               />
             </div>
             <div>
-              <h4>{name}</h4>
+              <h4>{profile.name}</h4>
             </div>
             <div>
-              <p>Hi, my name is Likith and I'm into web dev </p>
+              <p>{profile.bio}</p>
+            </div>
+            <div>
+              <p>
+                <span>
+                  <LinkOutlined />{" "}
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://${profile.website}`}
+                  >
+                    {profile.website}
+                  </a>
+                </span>
+              </p>
             </div>
             <div
               style={{
                 display: "flex",
-                maxWidth: "11rem",
+                width: "11rem",
                 justifyContent: "space-between",
               }}
             >
@@ -178,7 +233,7 @@ export default function UserProfile() {
           </Menu>
         </div>
         <div className="mt-3">
-          {comp === "posts" && <YourPosts allPosts={allPosts} name={name} />}
+          {comp === "posts" && <YourPosts allPosts={allPosts} name={""} />}
           {comp === "with-replies" && <Replies />}
           {comp === "likes" && <Likes />}
         </div>
