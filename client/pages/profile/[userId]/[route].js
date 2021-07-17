@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { LinkOutlined, UserOutlined, CameraOutlined } from "@ant-design/icons";
 import ProfileEditModal from "../../../components/section/ProfileEditModal";
 import Resizer from "react-image-file-resizer";
+import { AuthContext } from "../../../context/auth-context";
 
 const { Item } = Menu;
 
@@ -24,9 +25,11 @@ const isValidUrl = (website) => {
 };
 
 export default function UserProfile() {
+  const { dispatch } = useContext(AuthContext);
   const [editName, setEditName] = useState("");
   const [editBio, setEditBio] = useState("");
   const [editWebsite, setEditWebsite] = useState("");
+  const [editProfilePic, setEditProfilePic] = useState({});
   const [profile, setProfile] = useState({});
   const router = useRouter();
   const { userId } = router.query;
@@ -35,6 +38,7 @@ export default function UserProfile() {
   const currentPath = router.query.route;
   const [comp, setComp] = useState({});
   const [profilePicFileObj, setProfilePicFileObj] = useState({});
+  const [profilePicAwsObj, setProfilePicAwsObj] = useState({});
 
   const [imgPreview, setImgPreview] = useState();
 
@@ -44,12 +48,18 @@ export default function UserProfile() {
       setAllPosts(data.posts);
     };
 
+    const profilePicData = JSON.parse(localStorage.getItem("profile_pic"))
+    console.log("profilePicData", profilePicData);
+    setProfilePicAwsObj(JSON.parse(localStorage.getItem("profile_pic")));
+    // console.log("ppAWSobj", profilePicAwsObj)
+
     const getUserProfileDetails = async () => {
       const { data } = await axios.get("/api/profile/get-profile-details");
-      console.log(data);
+      console.log("useEffect DATA: ", data);
       setEditName(data.name);
       setEditBio(data.bio);
       setEditWebsite(data.website);
+      setEditProfilePic(data.profile_pic);
       setProfile(data);
     };
     getAllPosts();
@@ -107,14 +117,13 @@ export default function UserProfile() {
     setIsModalVisible(true);
   };
 
-  const handleOk = async (e) => {
+  const handleOk = async () => {
     setConfirmLoading(true);
     const name = editName;
     const bio = editBio;
     const website = editWebsite;
 
     const urlValid = isValidUrl(website);
-    console.log(urlValid);
 
     if (!urlValid) {
       setConfirmLoading(false);
@@ -130,25 +139,46 @@ export default function UserProfile() {
       100,
       0,
       async (uri) => {
+        let data2;
+        let data3;
         try {
-          const { data } = await axios.post("/api/profile/upload-profile-pic", {
-            image: uri,
-          });
-          console.log("IMG UPLOADED: ", data.Location);
+          await axios
+            .post("/api/profile/upload-profile-pic", {
+              image: uri,
+            })
+            .then(async ({ data }) => {
+              console.log("data after then stmt: ", data);
+              // setProfilePicAwsObj(data);
+              dispatch({
+                type: "SET_PROFILE_PIC",
+                payload: data.Location,
+              });
+              localStorage.setItem("profile_pic", JSON.stringify(data));
+              data2 = await axios
+                .post(`/api/profile/${userId}/complete-profile`, {
+                  name,
+                  bio,
+                  website,
+                  profile_pic: data,
+                })
+                .then(async () => {
+                  data3 = await axios.get("/api/profile/get-profile-pic");
+                  // console.log("data3: ", data3.data.profilePic);
+                  // setProfilePicAwsObj(data3.data.profilePic);
+                  console.log("setting data3: ", data3.data.profilePic);
+                  setProfilePicAwsObj(data3.data.profilePic);
+                })
+                .catch((err) => console.log("data3 err", err));
+              // console.log("completeProfile: ", data2);
+            })
+            .catch((err) => console.log("data2 err", err));
         } catch (err) {
           console.log(err);
         }
       }
     );
 
-    const { data } = await axios.post(
-      `/api/profile/${userId}/complete-profile`,
-      {
-        name,
-        bio,
-        website,
-      }
-    );
+    console.log("after image upload: ", profilePicAwsObj);
 
     setNewProfileValues();
     setConfirmLoading(false);
@@ -180,15 +210,13 @@ export default function UserProfile() {
         setEditWebsite={setEditWebsite}
         handleImage={handleImage}
         imgPreview={imgPreview}
+        editProfilePic={editProfilePic}
       />
       <div className="d-flex" style={{ padding: "1.5rem" }}>
         <div className="profile-container" className="me-auto">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
-              <Avatar
-                src="https://cdn.britannica.com/55/174255-050-526314B6/brown-Guernsey-cow.jpg"
-                size={96}
-              />
+              <Avatar src={profilePicAwsObj.Location} size={96} />
             </div>
             <div>
               <h4>{profile.name}</h4>

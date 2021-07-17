@@ -1,9 +1,11 @@
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useReducer, createContext, useEffect } from "react";
 
 const initialState = {
   user: null,
+  profilePic: "",
 };
 
 const rootReducer = (state, action) => {
@@ -12,6 +14,8 @@ const rootReducer = (state, action) => {
       return { ...state, user: action.payload };
     case "LOGOUT":
       return { ...state, user: null };
+    case "SET_PROFILE_PIC":
+      return { ...state, profilePic: action.payload };
     default:
       return state;
   }

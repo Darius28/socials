@@ -18,6 +18,8 @@ export default function AuthNav() {
   const router = useRouter();
   const [current, setCurrent] = useState("");
   const { state, dispatch } = useContext(AuthContext);
+  const [profilePic, setProfilePic] = useState("");
+  const [userName, setUserName] = useState("");
 
   const handleClick = (e) => {
     setCurrent((current) => {
@@ -25,20 +27,45 @@ export default function AuthNav() {
     });
   };
 
+  // useEffect(() => {
+  //   setUserName(state.user.name);
+  // }, []);
+
+  useEffect(() => {
+    // console.log(JSON.parse(localStorage.getItem("profile_pic")).Location);
+    setProfilePic(JSON.parse(localStorage.getItem("profile_pic")).Location);
+    // console.log("localStorage changed");
+    // console.log(profilePic);
+  }, [state]);
+
+  // useEffect(() => {
+  //   console.log("auth nav fresh render")
+  //   setProfilePic(JSON.parse(localStorage.getItem("profile_pic")).Location);
+  // }, []);
+
   useEffect(() => {
     process.browser && setCurrent(window.location.pathname);
   }, [process.browser && window.location.pathname]);
 
-  console.log("STATEEEEEE: ", state)
+  // const nameTitle = state.user && state.user ? (
+  //   <>
+  //     <Avatar size={40} src={profilePic} /> {state.user.name}
+  //   </>
+  // ) : (
+  //   <>
+  //     <Avatar size={40} icon={<UserOutlined />} /> {state.user.name}
+  //   </>
+  // );
 
-  const nameTitle = state.user ? (
+  // console.log(state.user, state.profilePic);
+
+  const nameTitle = (state.profilePic || profilePic) ? (
     <>
-      {/* <Avatar size={40} src={state.profilePic} /> {state.user.name} */}
-      <Avatar size={40} icon={<UserOutlined />} /> {state.user.name}
+      <Avatar size={40} src={profilePic} /> {userName}
     </>
   ) : (
     <>
-      {/* <Avatar size={40} icon={<UserOutlined />} /> {state.user.name} */}
+      <Avatar size={40} icon={<UserOutlined />} /> {userName}
     </>
   );
 

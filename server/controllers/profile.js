@@ -15,13 +15,15 @@ export const completeProfile = async (req, res) => {
   try {
     // console.log("req.params", req.params);
     // console.log("req.body", req.body);
-    const { name, bio, website } = req.body;
+    const { name, bio, website, profile_pic } = req.body;
+    console.log("PROFILE_PIC: ", profile_pic);
     const user = await User.findByIdAndUpdate(req.params.userId, {
       name,
       bio,
       website,
+      profile_pic,
     }).exec();
-    console.log(user);
+    console.log("USER: ", user);
     res.json({ ok: true });
   } catch (err) {
     console.log(err);
@@ -32,6 +34,7 @@ export const getProfileDetails = async (req, res) => {
   try {
     //   console.log("req.user", req.user)
     const user = await User.findById(req.user.id).select("-password").exec();
+    console.log(user);
     return res.send(user);
   } catch (err) {
     console.log(err);
@@ -68,6 +71,16 @@ export const uploadProfilePic = async (req, res) => {
       console.log(data);
       res.send(data);
     });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getProfilePic = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).exec();
+    // console.log("GET PROFILE PIC  ====>> ", user.profile_pic);
+    res.send({ profilePic: user.profile_pic });
   } catch (err) {
     console.log(err);
   }

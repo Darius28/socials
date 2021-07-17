@@ -15,6 +15,7 @@ export default function ProfileEditModal({
   setEditWebsite,
   handleImage,
   imgPreview,
+  editProfilePic
 }) {
   return (
     <Modal
@@ -86,7 +87,7 @@ export default function ProfileEditModal({
                 <Avatar size={96} src={imgPreview} />
               ) : (
                 <Avatar
-                  src="https://cdn.britannica.com/55/174255-050-526314B6/brown-Guernsey-cow.jpg"
+                //   src={editProfilePic.Location}
                   size={96}
                 />
               )}
