@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useRouter } from "next/router";
 import { Avatar, Menu, Modal } from "antd";
 import Link from "next/link";
@@ -25,7 +25,8 @@ const isValidUrl = (website) => {
 };
 
 export default function UserProfile() {
-  const { dispatch } = useContext(AuthContext);
+  const { state, dispatch } = useContext(AuthContext);
+  const [editNameState, setEditNameState] = useState("");
   const [editName, setEditName] = useState("");
   const [editBio, setEditBio] = useState("");
   const [editWebsite, setEditWebsite] = useState("");
@@ -47,6 +48,11 @@ export default function UserProfile() {
       const { data } = await axios.get("/api/get-posts");
       setAllPosts(data.posts);
     };
+
+    console.log("state", state.user)
+
+    // setEditNameState(state.user.name);
+    console.log(editNameState);
 
     const profilePicData = JSON.parse(localStorage.getItem("profile_pic"));
     console.log("profilePicData", profilePicData);
@@ -285,7 +291,9 @@ export default function UserProfile() {
           </Menu>
         </div>
         <div className="mt-3">
-          {comp === "posts" && <YourPosts allPosts={allPosts} name={""} />}
+          {comp === "posts" && (
+            <YourPosts allPosts={allPosts} name={editName} />
+          )}
           {comp === "with-replies" && <Replies />}
           {comp === "likes" && <Likes />}
         </div>

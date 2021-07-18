@@ -27,6 +27,10 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [state, dispatch] = useReducer(rootReducer, initialState);
   useEffect(() => {
+    console.log(
+      "auth context use effect",
+      JSON.parse(localStorage.getItem("user"))
+    );
     dispatch({
       type: "LOGIN",
       payload: JSON.parse(localStorage.getItem("user")),

@@ -23,7 +23,9 @@ export const getPosts = async (req, res) => {
     const user = await User.findOne({ _id: req.user.id });
     const posts = await Post.find({ userId: req.user.id });
     // console.log(posts);
-    return res.send({ posts });
+    console.log("user data: ", user)
+    console.log("posts data: ", posts)
+    return res.send({ posts, name: user.name });
   } catch (err) {
     console.log(err);
     return res.status(400).send(err);

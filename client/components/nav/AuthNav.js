@@ -27,9 +27,14 @@ export default function AuthNav() {
     });
   };
 
-  // useEffect(() => {
-  //   setUserName(state.user.name);
-  // }, []);
+  useEffect(() => {
+    const getNameHandler = async () => {
+      const { data } = await axios.get("/api/profile/get-profile-name");
+      console.log(data.name);
+      setUserName(data.name);
+    };
+    getNameHandler();
+  }, []);
 
   useEffect(() => {
     // console.log(JSON.parse(localStorage.getItem("profile_pic")).Location);

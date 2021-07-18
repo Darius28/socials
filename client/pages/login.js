@@ -22,10 +22,11 @@ export default function Login() {
       });
       dispatch({
         type: "LOGIN",
-        payload: data,
+        payload: data.user,
       });
-      localStorage.setItem("user", JSON.stringify(data));
-      console.log(data)
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("profile_pic", JSON.stringify(data.profile_pic));
+      console.log(data);
       toast.success("Welcome.");
       router.replace("/home");
     } catch (err) {

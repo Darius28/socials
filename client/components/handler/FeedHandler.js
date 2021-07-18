@@ -31,6 +31,7 @@ export default function FeedHandler() {
   useEffect(() => {
     const getAllPosts = async () => {
       const { data } = await axios.get("/api/get-posts");
+      // console.log("getpostsdata: ", data)
       setAllPosts(data.posts);
       setName(data.name);
     };

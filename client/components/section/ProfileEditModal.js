@@ -7,6 +7,7 @@ export default function ProfileEditModal({
   handleOk,
   handleCancel,
   confirmLoading,
+  editNameRef,
   editName,
   editBio,
   editWebsite,
@@ -101,6 +102,7 @@ export default function ProfileEditModal({
             onChange={(e) => setEditName(e.target.value)}
             className="form-control"
             value={editName}
+            ref={editNameRef}
           />
         </div>
         <div className="mb-3">

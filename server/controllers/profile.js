@@ -103,3 +103,12 @@ export const getProfilePic = async (req, res) => {
     console.log(err);
   }
 };
+
+export const getProfileName = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).exec();
+    res.send({ name: user.name });
+  } catch (err) {
+    console.log(err);
+  }
+};

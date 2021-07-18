@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Avatar, Tooltip } from "antd";
 import {
   UserOutlined,
@@ -6,15 +6,28 @@ import {
   BarChartOutlined,
   CalendarOutlined,
 } from "@ant-design/icons";
+
 import { Collection, EmojiSmile } from "react-bootstrap-icons";
+import { AuthContext } from "../../context/auth-context";
 
 export default function ThoughtInput({ handleSubmit, thoughtRef }) {
+  const { state } = useContext(AuthContext);
+  const [userProfilePic, setUserProfilePic] = useState("");
+
+  useEffect(() => {
+    setUserProfilePic(JSON.parse(localStorage.getItem("profile_pic")));
+  }, [state]);
+
   return (
     <div style={{ borderBottom: "1px solid rgb(204, 204, 204)" }}>
       <div className="row">
         <div className="col d-flex">
           <div>
-            <Avatar size={64} icon={<UserOutlined />} />
+            {userProfilePic ? (
+              <Avatar size={64} src={userProfilePic.Location} />
+            ) : (
+              <Avatar size={64} icon={<UserOutlined />} />
+            )}
           </div>
           <textarea
             rows="3"
