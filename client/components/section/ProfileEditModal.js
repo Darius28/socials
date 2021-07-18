@@ -87,7 +87,7 @@ export default function ProfileEditModal({
                 <Avatar size={96} src={imgPreview} />
               ) : (
                 <Avatar
-                //   src={editProfilePic.Location}
+                  src={editProfilePic.Location}
                   size={96}
                 />
               )}

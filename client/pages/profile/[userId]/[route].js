@@ -48,7 +48,7 @@ export default function UserProfile() {
       setAllPosts(data.posts);
     };
 
-    const profilePicData = JSON.parse(localStorage.getItem("profile_pic"))
+    const profilePicData = JSON.parse(localStorage.getItem("profile_pic"));
     console.log("profilePicData", profilePicData);
     setProfilePicAwsObj(JSON.parse(localStorage.getItem("profile_pic")));
     // console.log("ppAWSobj", profilePicAwsObj)
@@ -145,6 +145,7 @@ export default function UserProfile() {
           await axios
             .post("/api/profile/upload-profile-pic", {
               image: uri,
+              prevImage: JSON.parse(localStorage.getItem("profile_pic")),
             })
             .then(async ({ data }) => {
               console.log("data after then stmt: ", data);
@@ -216,7 +217,11 @@ export default function UserProfile() {
         <div className="profile-container" className="me-auto">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
-              <Avatar src={profilePicAwsObj.Location} size={96} />
+              {profilePicAwsObj ? (
+                <Avatar src={profilePicAwsObj.Location} size={96} />
+              ) : (
+                <Avatar icon={<UserOutlined />} size={96} />
+              )}
             </div>
             <div>
               <h4>{profile.name}</h4>

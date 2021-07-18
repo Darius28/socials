@@ -43,10 +43,28 @@ export const getProfileDetails = async (req, res) => {
 
 export const uploadProfilePic = async (req, res) => {
   try {
-    const { image } = req.body;
+    const { image, prevImage } = req.body;
+    // console.log("img details: ", image);
+    console.log("prev img details: ", prevImage);
     if (!image) {
       return res.status(400).send("No image found.");
     }
+
+    if (prevImage) {
+      const oldImgParams = {
+        Bucket: prevImage.Bucket,
+        Key: prevImage.Key,
+      };
+
+      S3.deleteObject(oldImgParams, (err, data) => {
+        if (err) {
+          console.log(err);
+          // return res.sendStatus(400);
+        }
+        // res.send({ ok: true });
+      });
+    }
+
     const base64Data = new Buffer.from(
       image.replace(/^data:image\/\w+;base64,/, ""),
       "base64"

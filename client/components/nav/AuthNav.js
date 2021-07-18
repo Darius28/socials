@@ -33,7 +33,10 @@ export default function AuthNav() {
 
   useEffect(() => {
     // console.log(JSON.parse(localStorage.getItem("profile_pic")).Location);
-    setProfilePic(JSON.parse(localStorage.getItem("profile_pic")).Location);
+    if (localStorage.getItem("profile_pic")) {
+      setProfilePic(JSON.parse(localStorage.getItem("profile_pic")).Location);
+    }
+
     // console.log("localStorage changed");
     // console.log(profilePic);
   }, [state]);
@@ -59,15 +62,16 @@ export default function AuthNav() {
 
   // console.log(state.user, state.profilePic);
 
-  const nameTitle = (state.profilePic || profilePic) ? (
-    <>
-      <Avatar size={40} src={profilePic} /> {userName}
-    </>
-  ) : (
-    <>
-      <Avatar size={40} icon={<UserOutlined />} /> {userName}
-    </>
-  );
+  const nameTitle =
+    state.profilePic || profilePic ? (
+      <>
+        <Avatar size={40} src={profilePic} /> {userName}
+      </>
+    ) : (
+      <>
+        <Avatar size={40} icon={<UserOutlined />} /> {userName}
+      </>
+    );
 
   const logoutHandler = async () => {
     try {
@@ -76,6 +80,7 @@ export default function AuthNav() {
         type: "LOGOUT",
       });
       localStorage.removeItem("user");
+      localStorage.removeItem("profile_pic");
       router.replace("/");
       toast("Logout was successful.");
     } catch (err) {
