@@ -26,7 +26,6 @@ const isValidUrl = (website) => {
 
 export default function UserProfile() {
   const { state, dispatch } = useContext(AuthContext);
-  const [editNameState, setEditNameState] = useState("");
   const [editName, setEditName] = useState("");
   const [editBio, setEditBio] = useState("");
   const [editWebsite, setEditWebsite] = useState("");
@@ -40,8 +39,10 @@ export default function UserProfile() {
   const [comp, setComp] = useState({});
   const [profilePicFileObj, setProfilePicFileObj] = useState({});
   const [profilePicAwsObj, setProfilePicAwsObj] = useState({});
-
-  const [imgPreview, setImgPreview] = useState();
+  const [eName, setEName] = useState("");
+  const [eBio, setEBio] = useState("");
+  const [eWebsite, setEWebsite] = useState("");
+  const [imgPreview, setImgPreview] = useState("");
 
   useEffect(() => {
     const getAllPosts = async () => {
@@ -49,13 +50,8 @@ export default function UserProfile() {
       setAllPosts(data.posts);
     };
 
-    console.log("state", state.user)
-
-    // setEditNameState(state.user.name);
-    console.log(editNameState);
-
     const profilePicData = JSON.parse(localStorage.getItem("profile_pic"));
-    console.log("profilePicData", profilePicData);
+    // console.log("profilePicData", profilePicData);
     setProfilePicAwsObj(JSON.parse(localStorage.getItem("profile_pic")));
     // console.log("ppAWSobj", profilePicAwsObj)
 
@@ -70,7 +66,14 @@ export default function UserProfile() {
     };
     getAllPosts();
     getUserProfileDetails();
+    console.log("state", state);
   }, []);
+
+  useEffect(() => {
+    setEName(JSON.parse(localStorage.getItem("user")).name);
+    setEBio(JSON.parse(localStorage.getItem("user")).bio);
+    setEWebsite(JSON.parse(localStorage.getItem("user")).website);
+  }, [state]);
 
   useEffect(() => {
     process.browser && setCurrent(window.location.pathname);
@@ -136,57 +139,84 @@ export default function UserProfile() {
       toast.error("Invalid Website.");
       return;
     }
+    if (imgPreview === "") {
+      console.log("no img found")
+      let data;
+      data = await axios.post(`/api/profile/${userId}/complete-profile`, {
+        name,
+        bio,
+        website,
+        profile_pic: null,
+      });
 
-    Resizer.imageFileResizer(
-      profilePicFileObj,
-      720,
-      500,
-      "JPEG",
-      100,
-      0,
-      async (uri) => {
-        let data2;
-        let data3;
-        try {
-          await axios
-            .post("/api/profile/upload-profile-pic", {
-              image: uri,
-              prevImage: JSON.parse(localStorage.getItem("profile_pic")),
-            })
-            .then(async ({ data }) => {
-              console.log("data after then stmt: ", data);
-              // setProfilePicAwsObj(data);
-              dispatch({
-                type: "SET_PROFILE_PIC",
-                payload: data.Location,
-              });
-              localStorage.setItem("profile_pic", JSON.stringify(data));
-              data2 = await axios
-                .post(`/api/profile/${userId}/complete-profile`, {
-                  name,
-                  bio,
-                  website,
-                  profile_pic: data,
-                })
-                .then(async () => {
-                  data3 = await axios.get("/api/profile/get-profile-pic");
-                  // console.log("data3: ", data3.data.profilePic);
-                  // setProfilePicAwsObj(data3.data.profilePic);
-                  console.log("setting data3: ", data3.data.profilePic);
-                  setProfilePicAwsObj(data3.data.profilePic);
-                })
-                .catch((err) => console.log("data3 err", err));
-              // console.log("completeProfile: ", data2);
-            })
-            .catch((err) => console.log("data2 err", err));
-        } catch (err) {
-          console.log(err);
+      let oldLSData = JSON.parse(localStorage.getItem("user"));
+      let newLSData = { ...oldLSData, name, bio, website };
+      console.log("oldLSData", oldLSData);
+      console.log("new LS data", newLSData);
+      localStorage.setItem("user", JSON.stringify(newLSData));
+      dispatch({
+        type: "LOGIN",
+        payload: newLSData,
+      });
+    } else {
+      Resizer.imageFileResizer(
+        profilePicFileObj,
+        720,
+        500,
+        "JPEG",
+        100,
+        0,
+        async (uri) => {
+          let data2;
+          let data3;
+          try {
+            await axios
+              .post("/api/profile/upload-profile-pic", {
+                image: uri,
+                prevImage: JSON.parse(localStorage.getItem("profile_pic")),
+              })
+              .then(async ({ data }) => {
+                console.log("data after then stmt: ", data);
+                // setProfilePicAwsObj(data);
+                dispatch({
+                  type: "SET_PROFILE_PIC",
+                  payload: data.Location,
+                });
+                let oldLSData = JSON.parse(localStorage.getItem("user"));
+                let newLSData = { ...oldLSData, name, bio, website };
+                console.log("oldLSData", oldLSData);
+                console.log("new LS data", newLSData);
+                localStorage.setItem("user", JSON.stringify(newLSData));
+                localStorage.setItem("profile_pic", JSON.stringify(data));
+                dispatch({
+                  type: "LOGIN",
+                  payload: newLSData,
+                });
+                data2 = await axios
+                  .post(`/api/profile/${userId}/complete-profile`, {
+                    name,
+                    bio,
+                    website,
+                    profile_pic: data,
+                  })
+                  .then(async () => {
+                    data3 = await axios.get("/api/profile/get-profile-pic");
+                    // console.log("data3: ", data3.data.profilePic);
+                    // setProfilePicAwsObj(data3.data.profilePic);
+                    console.log("setting data3: ", data3.data.profilePic);
+                    setProfilePicAwsObj(data3.data.profilePic);
+                  })
+                  .catch((err) => console.log("data3 err", err));
+                // console.log("completeProfile: ", data2);
+              })
+              .catch((err) => console.log("data2 err", err));
+          } catch (err) {
+            console.log(err);
+          }
         }
-      }
-    );
-
-    console.log("after image upload: ", profilePicAwsObj);
-
+      );
+    }
+    // console.log("after image upload: ", profilePicAwsObj);
     setNewProfileValues();
     setConfirmLoading(false);
     setIsModalVisible(false);
@@ -230,10 +260,10 @@ export default function UserProfile() {
               )}
             </div>
             <div>
-              <h4>{profile.name}</h4>
+              <h4>{eName}</h4>
             </div>
             <div>
-              <p>{profile.bio}</p>
+              <p>{eBio}</p>
             </div>
             <div>
               <p>
@@ -242,9 +272,9 @@ export default function UserProfile() {
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`https://${profile.website}`}
+                    href={`https://${eWebsite}`}
                   >
-                    {profile.website}
+                    {eWebsite}
                   </a>
                 </span>
               </p>
@@ -291,9 +321,7 @@ export default function UserProfile() {
           </Menu>
         </div>
         <div className="mt-3">
-          {comp === "posts" && (
-            <YourPosts allPosts={allPosts} name={editName} />
-          )}
+          {comp === "posts" && <YourPosts allPosts={allPosts} name={eName} />}
           {comp === "with-replies" && <Replies />}
           {comp === "likes" && <Likes />}
         </div>

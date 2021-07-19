@@ -16,13 +16,23 @@ export const completeProfile = async (req, res) => {
     // console.log("req.params", req.params);
     // console.log("req.body", req.body);
     const { name, bio, website, profile_pic } = req.body;
-    console.log("PROFILE_PIC: ", profile_pic);
-    const user = await User.findByIdAndUpdate(req.params.userId, {
-      name,
-      bio,
-      website,
-      profile_pic,
-    }).exec();
+    // console.log("PROFILE_PIC: ", profile_pic);
+    let user;
+    if (profile_pic === null) {
+      user = await User.findByIdAndUpdate(req.params.userId, {
+        name,
+        bio,
+        website,
+      }).exec();
+    } else {
+      user = await User.findByIdAndUpdate(req.params.userId, {
+        name,
+        bio,
+        website,
+        profile_pic,
+      }).exec();
+    }
+
     console.log("USER: ", user);
     res.json({ ok: true });
   } catch (err) {

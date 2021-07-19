@@ -42,6 +42,13 @@ export default function AuthNav() {
       setProfilePic(JSON.parse(localStorage.getItem("profile_pic")).Location);
     }
 
+    if (localStorage.getItem("user")) {
+      setUserName(JSON.parse(localStorage.getItem("user")).name)
+      console.log(JSON.parse(localStorage.getItem("user")).name);
+    }
+
+    console.log("state changed!");
+
     // console.log("localStorage changed");
     // console.log(profilePic);
   }, [state]);
