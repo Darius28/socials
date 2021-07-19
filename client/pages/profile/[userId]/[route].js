@@ -70,9 +70,11 @@ export default function UserProfile() {
   }, []);
 
   useEffect(() => {
-    setEName(JSON.parse(localStorage.getItem("user")).name);
-    setEBio(JSON.parse(localStorage.getItem("user")).bio);
-    setEWebsite(JSON.parse(localStorage.getItem("user")).website);
+    if (state.user) {
+      setEName(JSON.parse(localStorage.getItem("user")).name);
+      setEBio(JSON.parse(localStorage.getItem("user")).bio);
+      setEWebsite(JSON.parse(localStorage.getItem("user")).website);
+    }
   }, [state]);
 
   useEffect(() => {
@@ -140,7 +142,7 @@ export default function UserProfile() {
       return;
     }
     if (imgPreview === "") {
-      console.log("no img found")
+      console.log("no img found");
       let data;
       data = await axios.post(`/api/profile/${userId}/complete-profile`, {
         name,
