@@ -27,14 +27,14 @@ export default function AuthNav() {
     });
   };
 
-  useEffect(() => {
-    const getNameHandler = async () => {
-      const { data } = await axios.get("/api/profile/get-profile-name");
-      console.log(data.name);
-      setUserName(data.name);
-    };
-    getNameHandler();
-  }, []);
+  // useEffect(() => {
+  //   const getNameHandler = async () => {
+  //     const { data } = await axios.get("/api/profile/get-profile-name");
+  //     console.log(data.name);
+  //     setUserName(data.name);
+  //   };
+  //   getNameHandler();
+  // }, []);
 
   useEffect(() => {
     // console.log(JSON.parse(localStorage.getItem("profile_pic")).Location);
