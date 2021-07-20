@@ -1,12 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import ThoughtInput from "../components/form/ThoughtInput";
 import News from "../components/layout/News";
-import YourPosts from "../components/layout/YourPosts";
 import FeedHandler from "../components/handler/FeedHandler";
+import { AuthContext } from "../context/auth-context";
 
 export default function Home() {
-  
+  const { state, dispatch } = useContext(AuthContext);
+  useEffect(() => {
+    // console.log("in request");
+    const searchProfiles = async () => {
+      const { data } = await axios.get("/api/profile/search-profiles");
+      console.log(data);
+      dispatch({
+        type: "SET_ALL_USERS",
+        payload: data.users
+      })
+    };
+    searchProfiles();
+  }, []);
+
+  console.log(state)
 
   return (
     <div className="d-flex" style={{ minHeight: "75vh" }}>

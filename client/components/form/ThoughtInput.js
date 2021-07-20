@@ -15,7 +15,9 @@ export default function ThoughtInput({ handleSubmit, thoughtRef }) {
   const [userProfilePic, setUserProfilePic] = useState("");
 
   useEffect(() => {
-    setUserProfilePic(JSON.parse(localStorage.getItem("profile_pic")));
+    if (state.profilePic) {
+      setUserProfilePic(JSON.parse(localStorage.getItem("profile_pic")));
+    }
   }, [state]);
 
   return (

@@ -1,4 +1,5 @@
 import User from "../models/user";
+import Post from "../models/posts";
 import AWS from "aws-sdk";
 import { nanoid } from "nanoid";
 
@@ -120,5 +121,19 @@ export const getProfileName = async (req, res) => {
     res.send({ name: user.name });
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const searchProfiles = async (req, res) => {
+  try {
+    console.log("in request")
+    // const { search } = req.body;
+    // console.log(search);
+    const matchingUsers = await User.find().select("_id name");
+    // console.log(matchingUsers);
+    res.send({ users: matchingUsers });
+    res.json({ ok: true });
+  } catch (err) {
+    console.log(Err);
   }
 };
