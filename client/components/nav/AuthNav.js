@@ -27,65 +27,30 @@ export default function AuthNav() {
     });
   };
 
-  // useEffect(() => {
-  //   const getNameHandler = async () => {
-  //     const { data } = await axios.get("/api/profile/get-profile-name");
-  //     console.log(data.name);
-  //     setUserName(data.name);
-  //   };
-  //   getNameHandler();
-  // }, []);
-
   useEffect(() => {
-    // console.log(JSON.parse(localStorage.getItem("profile_pic")).Location);
-    if (localStorage.getItem("profile_pic")) {
-      if (state.profilePic) {
-        setProfilePic(JSON.parse(localStorage.getItem("profile_pic")).Location);
-      }
+    console.log("authnav state changed!, state dependency");
+    console.log(state);
+    if (state.user) {
+      setUserName(state.user.name);
     }
-
-    if (localStorage.getItem("user")) {
-      setUserName(JSON.parse(localStorage.getItem("user")).name);
-      // console.log(JSON.parse(localStorage.getItem("user")).name);
+    if (state.profilePic) {
+      setProfilePic(state.profilePic.Location);
     }
-
-    // console.log("state changed!");
-
-    // console.log("localStorage changed");
-    // console.log(profilePic);
   }, [state]);
-
-  // useEffect(() => {
-  //   console.log("auth nav fresh render")
-  //   setProfilePic(JSON.parse(localStorage.getItem("profile_pic")).Location);
-  // }, []);
 
   useEffect(() => {
     process.browser && setCurrent(window.location.pathname);
   }, [process.browser && window.location.pathname]);
 
-  // const nameTitle = state.user && state.user ? (
-  //   <>
-  //     <Avatar size={40} src={profilePic} /> {state.user.name}
-  //   </>
-  // ) : (
-  //   <>
-  //     <Avatar size={40} icon={<UserOutlined />} /> {state.user.name}
-  //   </>
-  // );
-
-  // console.log(state.user, state.profilePic);
-
-  const nameTitle =
-    state.profilePic || profilePic ? (
-      <>
-        <Avatar size={40} src={profilePic} /> {userName}
-      </>
-    ) : (
-      <>
-        <Avatar size={40} icon={<UserOutlined />} /> {userName}
-      </>
-    );
+  const nameTitle = profilePic ? (
+    <>
+      <Avatar size={40} src={profilePic} /> {userName}
+    </>
+  ) : (
+    <>
+      <Avatar size={40} icon={<UserOutlined />} /> {userName}
+    </>
+  );
 
   const logoutHandler = async () => {
     try {

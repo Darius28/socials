@@ -13,13 +13,23 @@ export default function Home() {
       console.log(data);
       dispatch({
         type: "SET_ALL_USERS",
-        payload: data.users
-      })
+        payload: data.users,
+      });
     };
+
     searchProfiles();
+    if (state.profilePic) {
+      const getProfilePic = () => {
+        dispatch({
+          type: "SET_PROFILE_PIC",
+          payload: JSON.parse(localStorage.getItem("profile_pic")),
+        });
+      };
+      getProfilePic();
+    }
   }, []);
 
-  console.log(state)
+  console.log(state);
 
   return (
     <div className="d-flex" style={{ minHeight: "75vh" }}>

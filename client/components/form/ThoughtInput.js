@@ -12,21 +12,16 @@ import { AuthContext } from "../../context/auth-context";
 
 export default function ThoughtInput({ handleSubmit, thoughtRef }) {
   const { state } = useContext(AuthContext);
-  const [userProfilePic, setUserProfilePic] = useState("");
 
-  useEffect(() => {
-    if (state.profilePic) {
-      setUserProfilePic(JSON.parse(localStorage.getItem("profile_pic")));
-    }
-  }, [state]);
+  const profilePic = state.profilePic ? state.profilePic.Location : "";
 
   return (
     <div style={{ borderBottom: "1px solid rgb(204, 204, 204)" }}>
       <div className="row">
         <div className="col d-flex">
           <div>
-            {userProfilePic ? (
-              <Avatar size={64} src={userProfilePic.Location} />
+            {profilePic ? (
+              <Avatar size={64} src={profilePic} />
             ) : (
               <Avatar size={64} icon={<UserOutlined />} />
             )}

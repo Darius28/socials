@@ -43,39 +43,71 @@ export default function UserProfile() {
   const [eBio, setEBio] = useState("");
   const [eWebsite, setEWebsite] = useState("");
   const [imgPreview, setImgPreview] = useState("");
+  const [showEditButton, setShowEditButton] = useState(true);
 
   useEffect(() => {
+    console.log("Router changed!");
     const getAllPosts = async () => {
-      const { data } = await axios.get("/api/get-posts");
+      const { data } = await axios.get(
+        `/api/post/${router.query.userId}/get-posts`
+      );
       setAllPosts(data.posts);
     };
 
-    const profilePicData = JSON.parse(localStorage.getItem("profile_pic"));
-    // console.log("profilePicData", profilePicData);
-    setProfilePicAwsObj(JSON.parse(localStorage.getItem("profile_pic")));
-    // console.log("ppAWSobj", profilePicAwsObj)
+    if (router.query.userId === JSON.parse(localStorage.getItem("user"))._id) {
+      setShowEditButton(true);
+    } else {
+      setShowEditButton(false);
+    }
 
     const getUserProfileDetails = async () => {
-      const { data } = await axios.get("/api/profile/get-profile-details");
+      console.log(router.query.userId);
+      const { data } = await axios.get(
+        `/api/profile/${router.query.userId}/get-profile-details`
+      );
       console.log("useEffect DATA: ", data);
-      setEditName(data.name);
-      setEditBio(data.bio);
-      setEditWebsite(data.website);
-      setEditProfilePic(data.profile_pic);
+
+      if (
+        router.query.userId !== JSON.parse(localStorage.getItem("user"))._id
+      ) {
+        setEName(data.name);
+        setEBio(data.bio);
+        setEWebsite(data.website);
+        setProfilePicAwsObj(data.profile_pic);
+      } else {
+        setEditName(data.name);
+        setEditBio(data.bio);
+        setEditWebsite(data.website);
+        if (data.profile_pic) {
+          setEditProfilePic(data.profile_pic);
+        }
+      }
       setProfile(data);
     };
-    getAllPosts();
-    getUserProfileDetails();
-    console.log("state", state);
-  }, []);
+
+    if (router.query.userId) {
+      getAllPosts();
+      getUserProfileDetails();
+    }
+
+    console.log("ROUTER CHANGED, state: ", state);
+  }, [router]);
 
   useEffect(() => {
-    if (state.user) {
+    if (
+      state.user &&
+      router.query.userId === JSON.parse(localStorage.getItem("user"))._id
+    ) {
       setEName(JSON.parse(localStorage.getItem("user")).name);
       setEBio(JSON.parse(localStorage.getItem("user")).bio);
       setEWebsite(JSON.parse(localStorage.getItem("user")).website);
+      console.log("Profile Pic state changed in [route]");
+      if (state.profilePic) {
+        setProfilePicAwsObj(JSON.parse(localStorage.getItem("profile_pic")));
+      }
     }
-  }, [state]);
+    console.log(state)
+  }, [state, router]);
 
   useEffect(() => {
     process.browser && setCurrent(window.location.pathname);
@@ -86,7 +118,9 @@ export default function UserProfile() {
   };
 
   const setNewProfileValues = async () => {
-    const { data } = await axios.get("/api/profile/get-profile-details");
+    const { data } = await axios.get(
+      `/api/profile/${router.query.userId}/get-profile-details`
+    );
     setProfile(data);
     toast("Profile Updated.");
   };
@@ -175,14 +209,15 @@ export default function UserProfile() {
             await axios
               .post("/api/profile/upload-profile-pic", {
                 image: uri,
-                prevImage: JSON.parse(localStorage.getItem("profile_pic")),
+                prevImage: state.profilePic
+                  ? JSON.parse(localStorage.getItem("profile_pic"))
+                  : "",
               })
               .then(async ({ data }) => {
                 console.log("data after then stmt: ", data);
-                // setProfilePicAwsObj(data);
                 dispatch({
                   type: "SET_PROFILE_PIC",
-                  payload: data.Location,
+                  payload: data,
                 });
                 let oldLSData = JSON.parse(localStorage.getItem("user"));
                 let newLSData = { ...oldLSData, name, bio, website };
@@ -202,7 +237,7 @@ export default function UserProfile() {
                     profile_pic: data,
                   })
                   .then(async () => {
-                    data3 = await axios.get("/api/profile/get-profile-pic");
+                    data3 = await axios.get(`/api/profile/${userId}/get-profile-pic`);
                     // console.log("data3: ", data3.data.profilePic);
                     // setProfilePicAwsObj(data3.data.profilePic);
                     console.log("setting data3: ", data3.data.profilePic);
@@ -234,6 +269,8 @@ export default function UserProfile() {
     setProfilePicFileObj(e.target.files[0]);
   };
 
+  console.log(profilePicAwsObj)
+
   return (
     <div className="container">
       <ProfileEditModal
@@ -255,7 +292,7 @@ export default function UserProfile() {
         <div className="profile-container" className="me-auto">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
-              {profilePicAwsObj ? (
+              {profilePicAwsObj.Location ? (
                 <Avatar src={profilePicAwsObj.Location} size={96} />
               ) : (
                 <Avatar icon={<UserOutlined />} size={96} />
@@ -264,20 +301,33 @@ export default function UserProfile() {
             <div>
               <h4>{eName}</h4>
             </div>
-            <div>
-              <p>{eBio}</p>
-            </div>
+            {eBio === undefined ? (
+              <div>
+                <p style={{ fontStyle: "italic" }}>
+                  Add something about yourself!
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p>{eBio}</p>
+              </div>
+            )}
+
             <div>
               <p>
                 <span>
                   <LinkOutlined />{" "}
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`https://${eWebsite}`}
-                  >
-                    {eWebsite}
-                  </a>
+                  {eWebsite === undefined ? (
+                    <span style={{ fontStyle: "italic" }}>Add your Website!</span>
+                  ) : (
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={`https://${eWebsite}`}
+                    >
+                      {eWebsite}
+                    </a>
+                  )}
                 </span>
               </p>
             </div>
@@ -298,9 +348,15 @@ export default function UserProfile() {
           </div>
         </div>
         <div>
-          <button className="btn btn-primary" onClick={showModal}>
-            Edit Profile
-          </button>
+          {showEditButton ? (
+            <>
+              <button className="btn btn-primary" onClick={showModal}>
+                Edit Profile
+              </button>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <hr />

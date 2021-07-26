@@ -4,6 +4,6 @@ import { validJwt } from "../middleware";
 const router = express.Router();
 
 router.post("/post-new-post", validJwt, postNewPost);
-router.get("/get-posts", validJwt, getPosts);
+router.get("/post/:userId/get-posts", validJwt, getPosts);
 
 module.exports = router;

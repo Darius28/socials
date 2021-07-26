@@ -16,8 +16,9 @@ export default function ProfileEditModal({
   setEditWebsite,
   handleImage,
   imgPreview,
-  editProfilePic
+  editProfilePic,
 }) {
+  const editProfilePicFinal = editProfilePic ? editProfilePic.Location : "";
   return (
     <Modal
       title="Edit Profile"
@@ -70,7 +71,7 @@ export default function ProfileEditModal({
                     onChange={handleImage}
                   />
                   <label htmlFor="profilePic" style={{ cursor: "pointer" }}>
-                    <CameraOutlined style={{ color: "white", }} />
+                    <CameraOutlined style={{ color: "white" }} />
                   </label>
                 </Tooltip>
               </div>
@@ -86,11 +87,10 @@ export default function ProfileEditModal({
             >
               {imgPreview ? (
                 <Avatar size={96} src={imgPreview} />
+              ) : editProfilePicFinal ? (
+                <Avatar src={editProfilePicFinal} size={96} />
               ) : (
-                <Avatar
-                  src={editProfilePic.Location}
-                  size={96}
-                />
+                <Avatar size={96} />
               )}
             </div>
           </div>

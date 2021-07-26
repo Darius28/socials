@@ -20,11 +20,11 @@ export const postNewPost = async (req, res) => {
 
 export const getPosts = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.user.id });
-    const posts = await Post.find({ userId: req.user.id });
+    const user = await User.findOne({ _id: req.params.userId });
+    const posts = await Post.find({ userId: req.params.userId });
     // console.log(posts);
-    console.log("user data: ", user)
-    console.log("posts data: ", posts)
+    // console.log("user data: ", user);
+    // console.log("posts data: ", posts);
     return res.send({ posts, name: user.name });
   } catch (err) {
     console.log(err);

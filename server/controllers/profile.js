@@ -34,7 +34,7 @@ export const completeProfile = async (req, res) => {
       }).exec();
     }
 
-    console.log("USER: ", user);
+    // console.log("USER: ", user);
     res.json({ ok: true });
   } catch (err) {
     console.log(err);
@@ -43,8 +43,15 @@ export const completeProfile = async (req, res) => {
 
 export const getProfileDetails = async (req, res) => {
   try {
-    //   console.log("req.user", req.user)
-    const user = await User.findById(req.user.id).select("-password").exec();
+    console.log(
+      "req.params.userId, req.user.id",
+      req.params.userId,
+      req.user.id
+    );
+
+    const user = await User.findById(req.params.userId)
+      .select("-password")
+      .exec();
     console.log(user);
     return res.send(user);
   } catch (err) {
@@ -56,7 +63,7 @@ export const uploadProfilePic = async (req, res) => {
   try {
     const { image, prevImage } = req.body;
     // console.log("img details: ", image);
-    console.log("prev img details: ", prevImage);
+    // console.log("prev img details: ", prevImage);
     if (!image) {
       return res.status(400).send("No image found.");
     }
@@ -97,7 +104,7 @@ export const uploadProfilePic = async (req, res) => {
         console.log(err);
         return res.sendStatus(400);
       }
-      console.log(data);
+      // console.log(data);
       res.send(data);
     });
   } catch (err) {
@@ -107,7 +114,8 @@ export const uploadProfilePic = async (req, res) => {
 
 export const getProfilePic = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).exec();
+    const userId = req.params.userId;
+    const user = await User.findById(userId).exec();
     // console.log("GET PROFILE PIC  ====>> ", user.profile_pic);
     res.send({ profilePic: user.profile_pic });
   } catch (err) {
@@ -126,14 +134,14 @@ export const getProfileName = async (req, res) => {
 
 export const searchProfiles = async (req, res) => {
   try {
-    console.log("in request")
+    // console.log("in request");
     // const { search } = req.body;
     // console.log(search);
     const matchingUsers = await User.find().select("_id name");
     // console.log(matchingUsers);
     res.send({ users: matchingUsers });
-    res.json({ ok: true });
+    // res.json({ ok: true });
   } catch (err) {
-    console.log(Err);
+    console.log(err);
   }
 };

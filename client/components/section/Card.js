@@ -3,16 +3,36 @@ import moment from "moment";
 import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../context/auth-context";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Card({ post, name }) {
+  const router = useRouter();
+  console.log(router.query.userId);
+  console.log(router);
   const { state } = useContext(AuthContext);
+  console.log(state);
   // console.log(post, name)
   const time = moment(post.createdAt).format("DD/MM/YY, HH:mm");
   const [userProfilePic, setUserProfilePic] = useState("");
 
   useEffect(() => {
-    setUserProfilePic(JSON.parse(localStorage.getItem("profile_pic")));
-  }, [state]);
+    if (router.pathname === "/home") {
+      if (state.profilePic) {
+        setUserProfilePic(JSON.parse(localStorage.getItem("profile_pic")));
+      }
+    } else {
+      console.log("else stmt card")
+      const getProfilePic = async (req, res) => {
+        const { data } = await axios.get(
+          `/api/profile/${router.query.userId}/get-profile-pic`
+        );
+        console.log(data.profilePic)
+        setUserProfilePic(data.profilePic);
+      };
+      getProfilePic();
+    }
+  }, [state, router]);
 
   return (
     <div>

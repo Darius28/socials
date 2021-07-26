@@ -3,14 +3,18 @@ import ThoughtInput from "../form/ThoughtInput";
 import YourPosts from "../layout/YourPosts";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 export default function FeedHandler() {
+
   const [allPosts, setAllPosts] = useState([]);
   const [name, setName] = useState("");
   const thoughtRef = useRef();
+  
 
   const reloadData = async () => {
-    const { data } = await axios.get("/api/get-posts");
+    const route = JSON.parse(window.localStorage.getItem("user"))._id;
+    const { data } = await axios.get(`/api/post/${route}/get-posts`);
     // console.log(data);
     setAllPosts(data.posts);
     toast("Post Successful.");
@@ -30,7 +34,8 @@ export default function FeedHandler() {
 
   useEffect(() => {
     const getAllPosts = async () => {
-      const { data } = await axios.get("/api/get-posts");
+      const route = JSON.parse(window.localStorage.getItem("user"))._id;
+      const { data } = await axios.get(`/api/post/${route}/get-posts`);
       // console.log("getpostsdata: ", data)
       setAllPosts(data.posts);
       setName(data.name);
