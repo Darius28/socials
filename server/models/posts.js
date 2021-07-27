@@ -6,7 +6,7 @@ export const postSchema = new Schema(
   {
     userId: {
       type: ObjectId,
-      required: true
+      required: true,
     },
     content: {
       type: String,
@@ -21,6 +21,7 @@ export const postSchema = new Schema(
       type: Number,
       default: 0,
     },
+    picture: {},
   },
   { timestamps: true }
 );

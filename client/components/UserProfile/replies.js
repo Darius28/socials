@@ -8,6 +8,11 @@ export default function Replies() {
   return (
     <div>
       <h1>Replies</h1>
+      <canvas
+        width="150"
+        height="150"
+        style={{ border: "1px solid black" }}
+      ></canvas>
     </div>
   );
 }

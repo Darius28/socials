@@ -33,6 +33,7 @@ export default function Home() {
 
   return (
     <div className="d-flex" style={{ minHeight: "75vh" }}>
+      
       <div
         className="col-md-9"
         style={{ borderRight: "1px solid rgb(204, 204, 204)", padding: "1rem" }}
