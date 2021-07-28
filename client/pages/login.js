@@ -25,7 +25,9 @@ export default function Login() {
         payload: data.user,
       });
       localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("profile_pic", JSON.stringify(data.profile_pic));
+      if (data.profile_pic) {
+        localStorage.setItem("profile_pic", JSON.stringify(data.profile_pic));
+      }
       console.log(data);
       toast.success("Welcome.");
       router.replace("/home");

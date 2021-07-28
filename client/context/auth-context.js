@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       type: "LOGIN",
       payload: JSON.parse(localStorage.getItem("user")),
     });
-    if (state.profilePic || JSON.parse(localStorage.getItem("profile_pic"))) {
+    if (state.profilePic || JSON.stringify(localStorage.getItem("profile_pic"))) {
       dispatch({
         type: "SET_PROFILE_PIC",
         payload: JSON.parse(localStorage.getItem("profile_pic")),

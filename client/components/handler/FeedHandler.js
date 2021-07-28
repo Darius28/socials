@@ -10,7 +10,7 @@ import Resizer from "react-image-file-resizer";
 export default function FeedHandler() {
   const [allPosts, setAllPosts] = useState([]);
   const [name, setName] = useState("");
-
+  
   const [postImgPreview, setPostImgPreview] = useState("");
   const [postFileObj, setPostFileObj] = useState({});
 
