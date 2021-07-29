@@ -8,6 +8,8 @@ import {
   RedoOutlined,
   CloseOutlined,
   EnterOutlined,
+  ExclamationCircleOutlined,
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 import { Collection, EmojiSmile, Book } from "react-bootstrap-icons";
 import { AuthContext } from "../../context/auth-context";
@@ -24,10 +26,19 @@ export default function ThoughtInput({
   const { state } = useContext(AuthContext);
   const [showBoard, setShowBoard] = useState(false);
   const [sketchUri, setSketchUri] = useState("");
+  const [sketchEmpty, setSketchEmpty] = useState(true);
+  const [showSketchTick, setShowSketchTick] = useState(false);
   const profilePic = state.profilePic ? state.profilePic.Location : "";
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [confirmSketch, setConfirmSketch] = useState(false);
+
+  useEffect(() => {
+    if (postImgPreview) {
+      setShowBoard(false);
+    }
+  }, [postImgPreview, showBoard]);
 
   useEffect(() => {
     if (showBoard) {
@@ -36,8 +47,6 @@ export default function ThoughtInput({
       canvas.height = 300;
       canvas.style.width = `${500}px`;
       canvas.style.height = `${300}px`;
-      console.log(window.innerWidth, window.innerHeight);
-
       const context = canvas.getContext("2d");
 
       context.lineCap = "round";
@@ -57,16 +66,26 @@ export default function ThoughtInput({
   };
 
   const startDrawing = ({ nativeEvent }) => {
+    if (confirmSketch) return;
     const { offsetX, offsetY } = nativeEvent;
     contextRef.current.beginPath();
     contextRef.current.moveTo(offsetX, offsetY);
     setIsDrawing(true);
   };
   const finishDrawing = () => {
+    if (confirmSketch) return;
     contextRef.current.closePath();
     setIsDrawing(false);
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    const pixelBuffer = new Uint32Array(
+      context.getImageData(0, 0, canvas.width, canvas.height).data.buffer
+    );
+
+    setSketchEmpty(!pixelBuffer.some((color) => color !== 0));
   };
   const draw = ({ nativeEvent }) => {
+    if (confirmSketch) return;
     if (!isDrawing) {
       return;
     }
@@ -79,6 +98,9 @@ export default function ThoughtInput({
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
+    setConfirmSketch(false);
+    setSketchEmpty(true);
+    setShowSketchTick(false);
   };
 
   const confirmCanvasHandler = () => {
@@ -87,7 +109,28 @@ export default function ThoughtInput({
     const pixelBuffer = new Uint32Array(
       context.getImageData(0, 0, canvas.width, canvas.height).data.buffer
     );
+
     console.log(!pixelBuffer.some((color) => color !== 0));
+    if (!pixelBuffer.some((color) => color !== 0)) {
+      setSketchEmpty(false);
+      return;
+    }
+    setConfirmSketch(true);
+    setShowSketchTick(true);
+    setSketchEmpty(true);
+    setSketchUri(canvas.toDataURL());
+  };
+
+  const sketchWarningMessage = () => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    const pixelBuffer = new Uint32Array(
+      context.getImageData(0, 0, canvas.width, canvas.height).data.buffer
+    );
+    if (!pixelBuffer.some((color) => color !== 0)) {
+      return "Submit Invalid. No Sketch Found.";
+    }
+    return "Sketch hasn't been added.";
   };
 
   return (
@@ -129,43 +172,86 @@ export default function ThoughtInput({
       )}
 
       {showBoard && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <div>
-            <canvas
-              id="sketchCanvas"
-              style={{ border: "1px solid black" }}
-              onMouseDown={startDrawing}
-              onMouseUp={finishDrawing}
-              onMouseMove={draw}
-              ref={canvasRef}
-            />
-          </div>
-          <div style={{ marginLeft: "0.3rem" }}>
-            <Tooltip title="Reset Sketch" placement="top">
-              <RedoOutlined
-                style={{ color: "red", cursor: "pointer", fontSize: "1.5rem" }}
-                onClick={resetCanvasHandler}
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <div>
+              <canvas
+                id="sketchCanvas"
+                style={{ border: "1px solid black" }}
+                onMouseDown={startDrawing}
+                onMouseUp={finishDrawing}
+                onMouseMove={draw}
+                ref={canvasRef}
               />
-            </Tooltip>
+            </div>
+            <div style={{ marginLeft: "0.3rem" }}>
+              <Tooltip title="Reset Sketch" placement="top">
+                <RedoOutlined
+                  style={{
+                    color: "red",
+                    cursor: "pointer",
+                    fontSize: "1.5rem",
+                  }}
+                  onClick={resetCanvasHandler}
+                />
+              </Tooltip>
+            </div>
+            <div style={{ marginLeft: "0.3rem" }}>
+              <Tooltip title="Confirm Sketch" placement="top">
+                <EnterOutlined
+                  style={{
+                    color: "green",
+                    cursor: "pointer",
+                    fontSize: "1.5rem",
+                  }}
+                  onClick={confirmCanvasHandler}
+                />
+              </Tooltip>
+            </div>
+            {!sketchEmpty && (
+              <div style={{ marginLeft: "0.3rem" }}>
+                <Tooltip title={sketchWarningMessage} placement="top">
+                  <ExclamationCircleOutlined
+                    style={{
+                      color: "gold",
+                      cursor: "pointer",
+                      fontSize: "1.5rem",
+                    }}
+                  />
+                </Tooltip>
+              </div>
+            )}
+            {showSketchTick && (
+              <div style={{ marginLeft: "0.3rem" }}>
+                <Tooltip title="Sketch Added!" placement="top">
+                  <CheckSquareOutlined
+                    style={{
+                      color: "green",
+                      fontSize: "1.5rem",
+                    }}
+                  />
+                </Tooltip>
+              </div>
+            )}
           </div>
-          <div style={{ marginLeft: "0.3rem" }}>
-            <Tooltip title="Confirm Sketch" placement="top">
-              <EnterOutlined
-                style={{
-                  color: "green",
-                  cursor: "pointer",
-                  fontSize: "1.5rem",
-                }}
-                onClick={confirmCanvasHandler}
-              />
-            </Tooltip>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <p style={{ fontStyle: "italic" }}>
+              NOTE: Remember to click the "confirm sketch" button above before
+              posting.
+            </p>
+            <div style={{ width: "3rem" }}></div>
           </div>
-        </div>
+        </>
       )}
 
       <div className="row">
@@ -217,7 +303,7 @@ export default function ThoughtInput({
           <div className="ms-auto mb-3">
             <button
               className="btn btn-primary"
-              onClick={handleSubmit.bind(null, postFileObj)}
+              onClick={handleSubmit.bind(null, postFileObj, sketchUri)}
             >
               Post
             </button>
