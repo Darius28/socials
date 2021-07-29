@@ -269,8 +269,6 @@ export default function UserProfile() {
     setProfilePicFileObj(e.target.files[0]);
   };
 
-  console.log(profilePicAwsObj)
-
   return (
     <div className="container">
       <ProfileEditModal
@@ -292,7 +290,7 @@ export default function UserProfile() {
         <div className="profile-container" className="me-auto">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
-              {profilePicAwsObj.Location ? (
+              {profilePicAwsObj ? (
                 <Avatar src={profilePicAwsObj.Location} size={96} />
               ) : (
                 <Avatar icon={<UserOutlined />} size={96} />

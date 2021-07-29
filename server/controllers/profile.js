@@ -92,7 +92,7 @@ export const uploadProfilePic = async (req, res) => {
 
     const params = {
       Bucket: "socials-2828",
-      Key: `${nanoid()}.${type}`,
+      Key: `${`pp`}${nanoid()}.${type}`,
       Body: base64Data,
       ACL: "public-read",
       ContentEncoding: "base64",
