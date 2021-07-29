@@ -22,9 +22,10 @@ export default function ThoughtInput({
   postFileObj,
   setPostFileObj,
   cancelPhotoHandler,
+  showBoard,
+  setShowBoard,
 }) {
   const { state } = useContext(AuthContext);
-  const [showBoard, setShowBoard] = useState(false);
   const [sketchUri, setSketchUri] = useState("");
   const [sketchEmpty, setSketchEmpty] = useState(true);
   const [showSketchTick, setShowSketchTick] = useState(false);
@@ -35,8 +36,10 @@ export default function ThoughtInput({
   const [confirmSketch, setConfirmSketch] = useState(false);
 
   useEffect(() => {
+    console.log("post img preview and showboard changed");
     if (postImgPreview) {
       setShowBoard(false);
+      setSketchUri("");
     }
   }, [postImgPreview, showBoard]);
 
@@ -62,6 +65,9 @@ export default function ThoughtInput({
   };
 
   const canvasHandler = () => {
+    if (showBoard === true) {
+      resetCanvasHandler();
+    }
     setShowBoard((prevState) => !prevState);
   };
 
@@ -101,6 +107,7 @@ export default function ThoughtInput({
     setConfirmSketch(false);
     setSketchEmpty(true);
     setShowSketchTick(false);
+    setSketchUri("");
   };
 
   const confirmCanvasHandler = () => {
@@ -132,6 +139,12 @@ export default function ThoughtInput({
     }
     return "Sketch hasn't been added.";
   };
+
+  useEffect(() => {
+    if (showBoard === true) {
+      resetCanvasHandler();
+    }
+  }, [showBoard]);
 
   return (
     <div style={{ borderBottom: "1px solid rgb(204, 204, 204)" }}>

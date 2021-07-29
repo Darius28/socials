@@ -74,6 +74,25 @@ export default function Card({ post, name }) {
           />
         </div>
       )}
+      {post.sketchUri && (
+        <div
+          style={{
+            justifyContent: "center",
+            display: "flex",
+          }}
+        >
+          <img
+            src={post.sketchUri}
+            style={{
+              border: "1px solid black",
+              objectFit: "cover",
+              maxHeight: "200px",
+              maxWidth: "500px",
+              objectPosition: "50% 50%",
+            }}
+          />
+        </div>
+      )}
       <hr />
     </div>
   );

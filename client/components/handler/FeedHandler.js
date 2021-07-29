@@ -10,9 +10,10 @@ import Resizer from "react-image-file-resizer";
 export default function FeedHandler() {
   const [allPosts, setAllPosts] = useState([]);
   const [name, setName] = useState("");
-  
+
   const [postImgPreview, setPostImgPreview] = useState("");
   const [postFileObj, setPostFileObj] = useState({});
+  const [showBoard, setShowBoard] = useState(false);
 
   const thoughtRef = useRef();
 
@@ -30,14 +31,22 @@ export default function FeedHandler() {
     setPostFileObj({});
   };
 
-  const handleSubmit = async (file) => {
+  const handleSubmit = async (file, sketchUri) => {
+    const sketch = sketchUri.toString();
+    // console.log(file, sketchUri.toString());
     try {
       const emptyObj = _.isEqual(file, {});
       const thought = thoughtRef.current.value;
       if (emptyObj) {
         console.log("img not posted");
-        const { data } = await axios.post("/api/post-new-post", { thought });
+        const { data } = await axios.post("/api/post-new-post", {
+          thought,
+          sketch,
+        });
         thoughtRef.current.value = "";
+        if (showBoard === true) {
+          setShowBoard(false);
+        }
         reloadData();
       } else {
         console.log("img posted");
@@ -93,6 +102,8 @@ export default function FeedHandler() {
         postFileObj={postFileObj}
         setPostFileObj={setPostFileObj}
         cancelPhotoHandler={cancelPhotoHandler}
+        showBoard={showBoard}
+        setShowBoard={setShowBoard}
       />
       <YourPosts allPosts={allPosts} name={name} />
     </>

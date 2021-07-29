@@ -63,6 +63,7 @@ export const postNewPost = async (req, res) => {
       const post = await new Post({
         userId: req.user.id,
         content: req.body.thought,
+        sketchUri: req.body.sketch,
       }).save();
       res.send({ ok: true });
       // console.log(post);

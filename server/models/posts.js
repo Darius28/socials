@@ -22,6 +22,10 @@ export const postSchema = new Schema(
       default: 0,
     },
     picture: {},
+    sketchUri: {
+      type: String,
+      default: ""
+    },
   },
   { timestamps: true }
 );
