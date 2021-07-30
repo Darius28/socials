@@ -18,6 +18,10 @@ export default function TabsForYou() {
     }
   }, [state.searchProfileTerm]);
 
+  useEffect(() => {
+    setShowSearchResults(false);
+  }, []);
+
   return (
     <>
       {showSearchResults && (

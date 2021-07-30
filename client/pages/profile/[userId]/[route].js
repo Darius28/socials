@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useRouter } from "next/router";
-import { Avatar, Menu, Modal } from "antd";
+import { Avatar, Menu, Spin } from "antd";
 import Link from "next/link";
 import YourPosts from "../../../components/layout/YourPosts";
 import axios from "axios";
 import Replies from "../../../components/UserProfile/replies";
 import Likes from "../../../components/UserProfile/Likes";
 import { toast } from "react-toastify";
-import { LinkOutlined, UserOutlined, CameraOutlined } from "@ant-design/icons";
+import { LinkOutlined, UserOutlined, LoadingOutlined } from "@ant-design/icons";
 import ProfileEditModal from "../../../components/section/ProfileEditModal";
 import Resizer from "react-image-file-resizer";
 import { AuthContext } from "../../../context/auth-context";
+import _ from "lodash";
+import LoadingSpinner from "../../../components/Spinner/LoadingSpinner";
 
 const { Item } = Menu;
 
@@ -23,6 +25,8 @@ const isValidUrl = (website) => {
     return false;
   }
 };
+
+const antIcon = <LoadingOutlined style={{ fontSize: 72 }} spin />;
 
 export default function UserProfile() {
   const { state, dispatch } = useContext(AuthContext);
@@ -44,14 +48,17 @@ export default function UserProfile() {
   const [eWebsite, setEWebsite] = useState("");
   const [imgPreview, setImgPreview] = useState("");
   const [showEditButton, setShowEditButton] = useState(true);
+  const [postsLoading, setPostsLoading] = useState(false);
 
   useEffect(() => {
     console.log("Router changed!");
     const getAllPosts = async () => {
+      setPostsLoading(true);
       const { data } = await axios.get(
         `/api/post/${router.query.userId}/get-posts`
       );
       setAllPosts(data.posts);
+      setPostsLoading(false);
     };
 
     if (router.query.userId === JSON.parse(localStorage.getItem("user"))._id) {
@@ -79,6 +86,7 @@ export default function UserProfile() {
         setEditBio(data.bio);
         setEditWebsite(data.website);
         if (data.profile_pic) {
+          console.log("data.profile_pic", data.profile_pic);
           setEditProfilePic(data.profile_pic);
         }
       }
@@ -103,10 +111,11 @@ export default function UserProfile() {
       setEWebsite(JSON.parse(localStorage.getItem("user")).website);
       console.log("Profile Pic state changed in [route]");
       if (state.profilePic) {
+        console.log("state.profilePic: ", state.profilePic);
         setProfilePicAwsObj(JSON.parse(localStorage.getItem("profile_pic")));
       }
     }
-    console.log(state)
+    console.log(state);
   }, [state, router]);
 
   useEffect(() => {
@@ -237,7 +246,9 @@ export default function UserProfile() {
                     profile_pic: data,
                   })
                   .then(async () => {
-                    data3 = await axios.get(`/api/profile/${userId}/get-profile-pic`);
+                    data3 = await axios.get(
+                      `/api/profile/${userId}/get-profile-pic`
+                    );
                     // console.log("data3: ", data3.data.profilePic);
                     // setProfilePicAwsObj(data3.data.profilePic);
                     console.log("setting data3: ", data3.data.profilePic);
@@ -290,10 +301,10 @@ export default function UserProfile() {
         <div className="profile-container" className="me-auto">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
-              {profilePicAwsObj ? (
-                <Avatar src={profilePicAwsObj.Location} size={96} />
-              ) : (
+              {_.isEqual(profilePicAwsObj, {}) || !profilePicAwsObj ? (
                 <Avatar icon={<UserOutlined />} size={96} />
+              ) : (
+                <Avatar src={profilePicAwsObj.Location} size={96} />
               )}
             </div>
             <div>
@@ -316,7 +327,9 @@ export default function UserProfile() {
                 <span>
                   <LinkOutlined />{" "}
                   {eWebsite === undefined ? (
-                    <span style={{ fontStyle: "italic" }}>Add your Website!</span>
+                    <span style={{ fontStyle: "italic" }}>
+                      Add your Website!
+                    </span>
                   ) : (
                     <a
                       target="_blank"
@@ -377,7 +390,13 @@ export default function UserProfile() {
           </Menu>
         </div>
         <div className="mt-3">
-          {comp === "posts" && <YourPosts allPosts={allPosts} name={eName} />}
+          {comp === "posts" ? (
+            postsLoading ? (
+              <LoadingSpinner spinning={postsLoading} />
+            ) : (
+              <YourPosts allPosts={allPosts} name={eName} />
+            )
+          ) : null}
           {comp === "with-replies" && <Replies />}
           {comp === "likes" && <Likes />}
         </div>

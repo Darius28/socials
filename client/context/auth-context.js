@@ -15,7 +15,7 @@ const rootReducer = (state, action) => {
     case "LOGIN":
       return { ...state, user: action.payload };
     case "LOGOUT":
-      return { ...state, user: null };
+      return { ...state, user: null, profilePic: "" };
     case "SET_PROFILE_PIC":
       return { ...state, profilePic: action.payload };
     case "SET_ALL_USERS":

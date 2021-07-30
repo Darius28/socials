@@ -3,14 +3,14 @@ import ThoughtInput from "../form/ThoughtInput";
 import YourPosts from "../layout/YourPosts";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useRouter } from "next/router";
 import _ from "lodash";
 import Resizer from "react-image-file-resizer";
+import LoadingSpinner from "../Spinner/LoadingSpinner";
 
 export default function FeedHandler() {
   const [allPosts, setAllPosts] = useState([]);
   const [name, setName] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const [postImgPreview, setPostImgPreview] = useState("");
   const [postFileObj, setPostFileObj] = useState({});
   const [showBoard, setShowBoard] = useState(false);
@@ -83,11 +83,13 @@ export default function FeedHandler() {
 
   useEffect(() => {
     const getAllPosts = async () => {
+      setLoading(true);
       const route = JSON.parse(window.localStorage.getItem("user"))._id;
       const { data } = await axios.get(`/api/post/${route}/get-posts`);
       // console.log("getpostsdata: ", data)
       setAllPosts(data.posts);
       setName(data.name);
+      setLoading(false);
     };
     getAllPosts();
   }, []);
@@ -105,7 +107,11 @@ export default function FeedHandler() {
         showBoard={showBoard}
         setShowBoard={setShowBoard}
       />
-      <YourPosts allPosts={allPosts} name={name} />
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <YourPosts allPosts={allPosts} name={name} />
+      )}
     </>
   );
 }
