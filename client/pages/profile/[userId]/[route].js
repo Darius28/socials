@@ -223,11 +223,16 @@ export default function UserProfile() {
                   payload: data,
                 });
                 let oldLSData = JSON.parse(localStorage.getItem("user"));
-                let newLSData = { ...oldLSData, name, bio, website };
+                let newLSData = {
+                  ...oldLSData,
+                  name,
+                  bio,
+                  website,
+                  profile_pic: data,
+                };
                 console.log("oldLSData", oldLSData);
                 console.log("new LS data", newLSData);
                 localStorage.setItem("user", JSON.stringify(newLSData));
-                localStorage.setItem("profile_pic", JSON.stringify(data));
                 dispatch({
                   type: "LOGIN",
                   payload: newLSData,

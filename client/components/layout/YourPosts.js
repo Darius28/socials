@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Card from "../section/Card";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { AuthContext } from "../../context/auth-context";
 
 export default function YourPosts({ allPosts, name }) {
+  const { state } = useContext(AuthContext);
   const router = useRouter();
   const [userProfilePic, setUserProfilePic] = useState("");
   const [userId, setUserId] = useState("");
@@ -12,7 +14,7 @@ export default function YourPosts({ allPosts, name }) {
     if (router.pathname === "/home") {
       setUserId(JSON.parse(localStorage.getItem("user"))._id);
     } else if ((router.pathname = "/profile/[userId]/[route]")) {
-      setUserId(router.query.userId)
+      setUserId(router.query.userId);
     }
   }, [router]);
 
@@ -27,6 +29,12 @@ export default function YourPosts({ allPosts, name }) {
       getProfilePic();
     }
   }, [userId]);
+
+  useEffect(() => {
+    if (state.user.profile_pic.Location !== userProfilePic.Location) {
+      setUserProfilePic(state.user.profile_pic);
+    }
+  }, [state]);
 
   return (
     <div>
