@@ -34,7 +34,6 @@ export default function UserProfile() {
   const [editBio, setEditBio] = useState("");
   const [editWebsite, setEditWebsite] = useState("");
   const [editProfilePic, setEditProfilePic] = useState({});
-  const [profile, setProfile] = useState({});
   const router = useRouter();
   const { userId } = router.query;
   const [allPosts, setAllPosts] = useState([]);
@@ -90,15 +89,12 @@ export default function UserProfile() {
           setEditProfilePic(data.profile_pic);
         }
       }
-      setProfile(data);
     };
 
     if (router.query.userId) {
       getAllPosts();
       getUserProfileDetails();
     }
-
-    console.log("ROUTER CHANGED, state: ", state);
   }, [router]);
 
   useEffect(() => {
@@ -109,13 +105,12 @@ export default function UserProfile() {
       setEName(JSON.parse(localStorage.getItem("user")).name);
       setEBio(JSON.parse(localStorage.getItem("user")).bio);
       setEWebsite(JSON.parse(localStorage.getItem("user")).website);
-      console.log("Profile Pic state changed in [route]");
-      if (state.profilePic) {
-        console.log("state.profilePic: ", state.profilePic);
-        setProfilePicAwsObj(JSON.parse(localStorage.getItem("profile_pic")));
+      if (state.user.profile_pic) {
+        setProfilePicAwsObj(
+          JSON.parse(localStorage.getItem("user")).profile_pic
+        );
       }
     }
-    console.log(state);
   }, [state, router]);
 
   useEffect(() => {
@@ -130,7 +125,6 @@ export default function UserProfile() {
     const { data } = await axios.get(
       `/api/profile/${router.query.userId}/get-profile-details`
     );
-    setProfile(data);
     toast("Profile Updated.");
   };
 

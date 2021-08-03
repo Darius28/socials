@@ -4,7 +4,6 @@ import { useReducer, createContext, useEffect } from "react";
 
 const initialState = {
   user: null,
-  profilePic: "",
   allUsers: [],
   searchProfileTerm: "",
   matchedProfiles: [],
@@ -15,7 +14,7 @@ const rootReducer = (state, action) => {
     case "LOGIN":
       return { ...state, user: action.payload };
     case "LOGOUT":
-      return { ...state, user: null, profilePic: "" };
+      return { ...state, user: null };
     case "SET_PROFILE_PIC":
       return { ...state, profilePic: action.payload };
     case "SET_ALL_USERS":
@@ -43,12 +42,6 @@ export const AuthProvider = ({ children }) => {
       type: "LOGIN",
       payload: JSON.parse(localStorage.getItem("user")),
     });
-    if (state.profilePic || JSON.stringify(localStorage.getItem("profile_pic"))) {
-      dispatch({
-        type: "SET_PROFILE_PIC",
-        payload: JSON.parse(localStorage.getItem("profile_pic")),
-      });
-    }
   }, []);
 
   axios.interceptors.response.use(

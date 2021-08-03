@@ -29,7 +29,7 @@ export default function ThoughtInput({
   const [sketchUri, setSketchUri] = useState("");
   const [sketchEmpty, setSketchEmpty] = useState(true);
   const [showSketchTick, setShowSketchTick] = useState(false);
-  const profilePic = state.profilePic ? state.profilePic.Location : "";
+  const [profilePic, setProfilePic] = useState("");
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -42,6 +42,12 @@ export default function ThoughtInput({
       setSketchUri("");
     }
   }, [postImgPreview, showBoard]);
+
+  useEffect(() => {
+    if (state.user && state.user.profile_pic) {
+      setProfilePic(state.user.profile_pic.Location);
+    }
+  }, [state]);
 
   useEffect(() => {
     if (showBoard) {

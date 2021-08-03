@@ -28,9 +28,6 @@ export default function Login() {
         payload: data.user,
       });
       localStorage.setItem("user", JSON.stringify(data.user));
-      if (data.profile_pic) {
-        localStorage.setItem("profile_pic", JSON.stringify(data.profile_pic));
-      }
       console.log(data);
       toast.success("Welcome.");
       setLoading(false);

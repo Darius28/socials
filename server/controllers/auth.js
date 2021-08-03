@@ -48,7 +48,7 @@ export const login = async (req, res) => {
 
     user.password = undefined;
     console.log("login details sent: ", user);
-    return res.send({ user, profile_pic: user.profile_pic });
+    return res.send({ user });
   } catch (err) {
     return res.status(400).send(err);
   }

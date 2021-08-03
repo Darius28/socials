@@ -18,22 +18,14 @@ export default function Home() {
     };
 
     searchProfiles();
-    if (state.profilePic) {
-      const getProfilePic = () => {
-        dispatch({
-          type: "SET_PROFILE_PIC",
-          payload: JSON.parse(localStorage.getItem("profile_pic")),
-        });
-      };
-      getProfilePic();
-    }
   }, []);
 
-  console.log(state);
+  useEffect(() => {
+    console.log("state.user: ", state.user);
+  }, [state]);
 
   return (
     <div className="d-flex" style={{ minHeight: "75vh" }}>
-      
       <div
         className="col-md-9"
         style={{ borderRight: "1px solid rgb(204, 204, 204)", padding: "1rem" }}

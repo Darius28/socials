@@ -33,8 +33,8 @@ export default function AuthNav() {
     if (state.user) {
       setUserName(state.user.name);
     }
-    if (state.profilePic) {
-      setProfilePic(state.profilePic.Location);
+    if (state.user && state.user.profile_pic) {
+      setProfilePic(state.user.profile_pic.Location);
     }
   }, [state]);
 

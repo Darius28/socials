@@ -1,7 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../section/Card";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function YourPosts({ allPosts, name }) {
+  const router = useRouter();
+  const [userProfilePic, setUserProfilePic] = useState("");
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    if (router.pathname === "/home") {
+      setUserId(JSON.parse(localStorage.getItem("user"))._id);
+    } else if ((router.pathname = "/profile/[userId]/[route]")) {
+      setUserId(router.query.userId)
+    }
+  }, [router]);
+
+  useEffect(() => {
+    const getProfilePic = async (req, res) => {
+      const { data } = await axios.get(
+        `/api/profile/${userId}/get-profile-pic`
+      );
+      setUserProfilePic(data.profilePic);
+    };
+    if (userId) {
+      getProfilePic();
+    }
+  }, [userId]);
+
   return (
     <div>
       {allPosts.length === 0 ? (
@@ -25,7 +51,7 @@ export default function YourPosts({ allPosts, name }) {
           .reverse()
           .map((post) => (
             <>
-              <Card post={post} name={name} />
+              <Card post={post} name={name} userProfilePic={userProfilePic} />
             </>
           ))
       )}
