@@ -31,8 +31,10 @@ export default function YourPosts({ allPosts, name }) {
   }, [userId]);
 
   useEffect(() => {
-    if (state.user.profile_pic.Location !== userProfilePic.Location) {
-      setUserProfilePic(state.user.profile_pic);
+    if (state && state.user && state.user.profile_pic) {
+      if (state.user.profile_pic.Location !== userProfilePic.Location) {
+        setUserProfilePic(state.user.profile_pic);
+      }
     }
   }, [state]);
 
