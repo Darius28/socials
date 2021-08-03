@@ -8,6 +8,7 @@ Tech Stack:
 1. Frontend: Next.js
 2. Backend: Express.js
 3. Database: MongoDB (for posts), AWS S3 (images)
+4. UI: Bootstrap and ant design icons, ant design templates.
 
 ############################################################
 
