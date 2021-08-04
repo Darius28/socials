@@ -14,6 +14,7 @@ const rootReducer = (state, action) => {
     case "LOGIN":
       return { ...state, user: action.payload };
     case "LOGOUT":
+      console.log("logout dispatched");
       return { ...state, user: null };
     case "SET_PROFILE_PIC":
       return { ...state, profilePic: action.payload };

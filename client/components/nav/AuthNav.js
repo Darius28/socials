@@ -34,6 +34,7 @@ export default function AuthNav() {
       setUserName(state.user.name);
     }
     if (state.user && state.user.profile_pic) {
+      console.log(state.user, state.user.profile_pic);
       setProfilePic(state.user.profile_pic.Location);
     }
   }, [state]);
@@ -58,8 +59,8 @@ export default function AuthNav() {
       dispatch({
         type: "LOGOUT",
       });
+      setProfilePic("");
       localStorage.removeItem("user");
-      localStorage.removeItem("profile_pic");
       router.replace("/");
       toast("Logout was successful.");
     } catch (err) {
