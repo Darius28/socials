@@ -13,6 +13,7 @@ const awsConfig = {
 const S3 = new AWS.S3(awsConfig);
 
 export const postNewPost = async (req, res) => {
+  const userId = req.user.id;
   try {
     // console.log("req.user", req.user.id);
     // console.log(req.body);
@@ -45,29 +46,38 @@ export const postNewPost = async (req, res) => {
         console.log("datadata", data);
         if (data) {
           console.log("data to be sent: ", data);
-          const post = await new Post({
-            userId: req.user.id,
-            content: req.body.thought,
-            picture: data,
-          }).save();
+          const post = await User.findOneAndUpdate(
+            { _id: userId },
+            {
+              $push: {
+                posts: {
+                  userId: req.user.id,
+                  content: req.body.thought,
+                  picture: data,
+                },
+              },
+            },
+            { new: true }
+          ).exec();
           res.send({ ok: true });
         }
       });
-      // const post = await new Post({
-      //   userId: req.user.id,
-      //   content: req.body.thought,
-      //   picture: data,
-      // }).save();
     } else {
       console.log("post without pic");
-      const post = await new Post({
-        userId: req.user.id,
-        content: req.body.thought,
-        sketchUri: req.body.sketch,
-      }).save();
-      res.send({ ok: true });
-      // console.log(post);
-      // res.json({ ok: true, postedAt: post.createdAt });
+      const post = await User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $push: {
+            posts: {
+              userId: req.user.id,
+              content: req.body.thought,
+              sketchUri: req.body.sketch,
+            },
+          },
+        },
+        { new: true }
+      ).exec();
+      res.json({ ok: true });
     }
   } catch (err) {
     console.log(err);
@@ -78,13 +88,26 @@ export const postNewPost = async (req, res) => {
 export const getPosts = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.userId });
-    const posts = await Post.find({ userId: req.params.userId });
-    // console.log(posts);
-    // console.log("user data: ", user);
-    // console.log("posts data: ", posts);
-    return res.send({ posts, name: user.name });
+    console.log("user.posts: ", user.posts);
+    return res.send({ posts: user.posts, name: user.name });
   } catch (err) {
     console.log(err);
     return res.status(400).send(err);
+  }
+};
+
+export const likePost = async (req, res) => {
+  try {
+    const { userId, postId } = req.params;
+    console.log(postId);
+    console.log(req.params.userId, req.params.postId);
+    const userPost = await User.findOne({ _id: userId }).exec();
+    const matchingPost = userPost.posts.find((post) => {
+      return post._id.toString() === postId.toString();
+    });
+    console.log("matchingPost", matchingPost);
+    res.json(userPost);
+  } catch (err) {
+    console.log(err);
   }
 };

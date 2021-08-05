@@ -396,7 +396,7 @@ export default function UserProfile() {
               <YourPosts allPosts={allPosts} name={eName} />
             )
           ) : null}
-          {comp === "with-replies" && <Replies />}
+          {/* {comp === "with-replies" && <Replies />} */}
           {comp === "likes" && <Likes />}
         </div>
       </div>

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 import { postSchema } from "./posts";
 
-const userSchema = new Schema(
+export const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -27,9 +27,7 @@ const userSchema = new Schema(
     website: {
       type: String,
     },
-    posts: {
-      type: [postSchema],
-    },
+    posts: [postSchema],
     profile_pic: {},
   },
   { timestamps: true }

@@ -1,12 +1,25 @@
 import React, { useContext } from "react";
 import moment from "moment";
-import { AutoComplete, Avatar, Image } from "antd";
+import { AutoComplete, Avatar, Image, Tooltip } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../context/auth-context";
+import { HeartOutlined } from "@ant-design/icons";
+import { HeartFill } from "react-bootstrap-icons";
+import axios from "axios";
 
 export default function Card({ post, name, userProfilePic }) {
   const { state } = useContext(AuthContext);
   const time = moment(post.createdAt).format("DD/MM/YY, HH:mm");
+
+  const likePostHandler = async (postId, userId) => {
+    try {
+      const { data } = await axios.post(
+        `/api/post/${userId}/${postId}/like-post`
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div>
@@ -16,7 +29,6 @@ export default function Card({ post, name, userProfilePic }) {
         ) : (
           <Avatar size={48} icon={<UserOutlined />} />
         )}
-
         <div>
           <span
             style={{ fontWeight: "500", fontSize: "1.5rem", margin: "0.5rem" }}
@@ -71,6 +83,17 @@ export default function Card({ post, name, userProfilePic }) {
           />
         </div>
       )}
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}
+      >
+        <Tooltip
+          title="Like"
+          placement="bottom"
+          onClick={likePostHandler.bind(null, post._id, post.userId)}
+        >
+          <HeartFill style={{ fontSize: "1.5rem", cursor: "pointer" }} />
+        </Tooltip>
+      </div>
       <hr />
     </div>
   );

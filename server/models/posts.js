@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 const { ObjectId } = Schema;
+const { userSchema } = require("./user");
 
 export const postSchema = new Schema(
   {
@@ -17,6 +18,7 @@ export const postSchema = new Schema(
       type: Number,
       default: 0,
     },
+    likedUsers: [userSchema],
     shares: {
       type: Number,
       default: 0,
@@ -24,7 +26,7 @@ export const postSchema = new Schema(
     picture: {},
     sketchUri: {
       type: String,
-      default: ""
+      default: "",
     },
   },
   { timestamps: true }
