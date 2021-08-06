@@ -212,16 +212,13 @@ export default function UserProfile() {
             await axios
               .post("/api/profile/upload-profile-pic", {
                 image: uri,
-                prevImage: state.profilePic
-                  ? JSON.parse(localStorage.getItem("profile_pic"))
+                prevImage: state.user.profile_pic
+                  ? JSON.parse(localStorage.getItem("user")).profile_pic
                   : "",
               })
               .then(async ({ data }) => {
-                console.log("data after then stmt: ", data);
-                dispatch({
-                  type: "SET_PROFILE_PIC",
-                  payload: data,
-                });
+                console.log("data after upload profile pic api call: ", data);
+                setProfilePicAwsObj(data);
                 let oldLSData = JSON.parse(localStorage.getItem("user"));
                 let newLSData = {
                   ...oldLSData,
@@ -233,28 +230,20 @@ export default function UserProfile() {
                 console.log("oldLSData", oldLSData);
                 console.log("new LS data", newLSData);
                 localStorage.setItem("user", JSON.stringify(newLSData));
+                console.log("about to dispatch new data to update state");
                 dispatch({
                   type: "LOGIN",
                   payload: newLSData,
                 });
-                data2 = await axios
-                  .post(`/api/profile/${userId}/complete-profile`, {
+                data2 = await axios.post(
+                  `/api/profile/${userId}/complete-profile`,
+                  {
                     name,
                     bio,
                     website,
                     profile_pic: data,
-                  })
-                  .then(async () => {
-                    data3 = await axios.get(
-                      `/api/profile/${userId}/get-profile-pic`
-                    );
-                    // console.log("data3: ", data3.data.profilePic);
-                    // setProfilePicAwsObj(data3.data.profilePic);
-                    console.log("setting data3: ", data3.data.profilePic);
-                    setProfilePicAwsObj(data3.data.profilePic);
-                  })
-                  .catch((err) => console.log("data3 err", err));
-                // console.log("completeProfile: ", data2);
+                  }
+                );
               })
               .catch((err) => console.log("data2 err", err));
           } catch (err) {

@@ -69,6 +69,7 @@ export const uploadProfilePic = async (req, res) => {
     }
 
     if (prevImage) {
+      console.log("delete image");
       const oldImgParams = {
         Bucket: prevImage.Bucket,
         Key: prevImage.Key,

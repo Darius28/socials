@@ -33,6 +33,7 @@ export default function YourPosts({ allPosts, name }) {
   useEffect(() => {
     if (state && state.user && state.user.profile_pic) {
       if (!state.user.profile_pic.Location) {
+        console.log("first if stmt");
         setUserProfilePic(userProfilePic.Location);
       }
       if (
@@ -40,6 +41,11 @@ export default function YourPosts({ allPosts, name }) {
         userProfilePic.Location &&
         state.user.profile_pic.Location !== userProfilePic.Location
       ) {
+        console.log("second if stmt");
+        setUserProfilePic(state.user.profile_pic);
+      }
+      if (!userProfilePic) {
+        console.log("third if stmt");
         setUserProfilePic(state.user.profile_pic);
       }
     }
