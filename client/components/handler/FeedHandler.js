@@ -18,10 +18,10 @@ export default function FeedHandler() {
   const thoughtRef = useRef();
 
   const reloadData = async () => {
-    console.log("reload data");
+    // console.log("reload data");
     const route = JSON.parse(window.localStorage.getItem("user"))._id;
     const { data } = await axios.get(`/api/post/${route}/get-posts`);
-    console.log(data.posts);
+    // console.log(data.posts);
     setAllPosts(data.posts);
     toast("Post Successful.");
   };
@@ -33,12 +33,12 @@ export default function FeedHandler() {
 
   const handleSubmit = async (file, sketchUri) => {
     const sketch = sketchUri.toString();
-    // console.log(file, sketchUri.toString());
+    // // console.log(file, sketchUri.toString());
     try {
       const emptyObj = _.isEqual(file, {});
       const thought = thoughtRef.current.value;
       if (emptyObj) {
-        console.log("img not posted");
+        // console.log("img not posted");
         const { data } = await axios.post("/api/post-new-post", {
           thought,
           sketch,
@@ -49,7 +49,7 @@ export default function FeedHandler() {
         }
         reloadData();
       } else {
-        console.log("img posted");
+        // console.log("img posted");
         Resizer.imageFileResizer(
           file,
           720,
@@ -65,17 +65,17 @@ export default function FeedHandler() {
                 postPic: uri,
               })
               .then((data) => {
-                console.log("in then func", data);
+                // console.log("in then func", data);
                 thoughtRef.current.value = "";
                 reloadData();
               });
           }
         );
-        console.log("outside async function");
+        // console.log("outside async function");
         // thoughtRef.current.value = "";
         // reloadData();
       }
-      console.log("outside else stmt");
+      // console.log("outside else stmt");
     } catch (err) {
       toast(err.response.data);
     }
@@ -86,7 +86,7 @@ export default function FeedHandler() {
       setLoading(true);
       const route = JSON.parse(window.localStorage.getItem("user"))._id;
       const { data } = await axios.get(`/api/post/${route}/get-posts`);
-      // console.log("getpostsdata: ", data)
+      // // console.log("getpostsdata: ", data)
       setAllPosts(data.posts);
       setName(data.name);
       setLoading(false);

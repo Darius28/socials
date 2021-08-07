@@ -2,6 +2,9 @@ import Post from "../models/posts";
 import User from "../models/user";
 import AWS from "aws-sdk";
 import { nanoid } from "nanoid";
+import mongoose from "mongoose";
+const { Schema } = mongoose;
+const { ObjectId } = Schema;
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -101,12 +104,16 @@ export const likePost = async (req, res) => {
     const { userId, postId } = req.params;
     console.log(postId);
     console.log(req.params.userId, req.params.postId);
-    const userPost = await User.findOne({ _id: userId }).exec();
-    const matchingPost = userPost.posts.find((post) => {
-      return post._id.toString() === postId.toString();
-    });
-    console.log("matchingPost", matchingPost);
-    res.json(userPost);
+    const userPost = await User.findOneAndUpdate(
+      { "posts._id": `${postId}` }
+      // { $addToSet: { `posts.$[arrayElement].${postId}` } }
+    ).exec();
+    console.log(userPost);
+    // const matchingPost = userPost.posts.find((post) => {
+    //   return post._id.toString() === postId.toString();
+    // });
+    // console.log("matchingPost", matchingPost);
+    // res.json(userPost);
   } catch (err) {
     console.log(err);
   }

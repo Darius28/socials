@@ -14,7 +14,7 @@ export default function Search() {
     const matchedData = state.allUsers.filter((user) => {
       return user.name.toLowerCase().includes(searchTerm);
     });
-    console.log(matchedData);
+    // console.log(matchedData);
     dispatch({
       type: "MATCHED_PROFILES",
       payload: matchedData,

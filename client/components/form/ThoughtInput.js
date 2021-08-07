@@ -36,7 +36,7 @@ export default function ThoughtInput({
   const [confirmSketch, setConfirmSketch] = useState(false);
 
   useEffect(() => {
-    console.log("post img preview and showboard changed");
+    // console.log("post img preview and showboard changed");
     if (postImgPreview) {
       setShowBoard(false);
       setSketchUri("");
@@ -123,7 +123,7 @@ export default function ThoughtInput({
       context.getImageData(0, 0, canvas.width, canvas.height).data.buffer
     );
 
-    console.log(!pixelBuffer.some((color) => color !== 0));
+    // console.log(!pixelBuffer.some((color) => color !== 0));
     if (!pixelBuffer.some((color) => color !== 0)) {
       setSketchEmpty(false);
       return;

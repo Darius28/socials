@@ -50,7 +50,7 @@ export default function UserProfile() {
   const [postsLoading, setPostsLoading] = useState(false);
 
   useEffect(() => {
-    console.log("Router changed!");
+    // console.log("Router changed!");
     const getAllPosts = async () => {
       setPostsLoading(true);
       const { data } = await axios.get(
@@ -67,11 +67,11 @@ export default function UserProfile() {
     }
 
     const getUserProfileDetails = async () => {
-      console.log(router.query.userId);
+      // console.log(router.query.userId);
       const { data } = await axios.get(
         `/api/profile/${router.query.userId}/get-profile-details`
       );
-      console.log("useEffect DATA: ", data);
+      // console.log("useEffect DATA: ", data);
 
       if (
         router.query.userId !== JSON.parse(localStorage.getItem("user"))._id
@@ -85,7 +85,7 @@ export default function UserProfile() {
         setEditBio(data.bio);
         setEditWebsite(data.website);
         if (data.profile_pic) {
-          console.log("data.profile_pic", data.profile_pic);
+          // console.log("data.profile_pic", data.profile_pic);
           setEditProfilePic(data.profile_pic);
         }
       }
@@ -151,8 +151,8 @@ export default function UserProfile() {
 
   useEffect(() => {
     const foundComponent = findSlugMatchingCmp();
-    console.log("current path: ", currentPath);
-    console.log("found component: ", foundComponent);
+    // console.log("current path: ", currentPath);
+    // console.log("found component: ", foundComponent);
     if (currentPath && !foundComponent) router.push("/404");
   }, [router]);
 
@@ -179,7 +179,7 @@ export default function UserProfile() {
       return;
     }
     if (imgPreview === "") {
-      console.log("no img found");
+      // console.log("no img found");
       let data;
       data = await axios.post(`/api/profile/${userId}/complete-profile`, {
         name,
@@ -190,8 +190,8 @@ export default function UserProfile() {
 
       let oldLSData = JSON.parse(localStorage.getItem("user"));
       let newLSData = { ...oldLSData, name, bio, website };
-      console.log("oldLSData", oldLSData);
-      console.log("new LS data", newLSData);
+      // console.log("oldLSData", oldLSData);
+      // console.log("new LS data", newLSData);
       localStorage.setItem("user", JSON.stringify(newLSData));
       dispatch({
         type: "LOGIN",
@@ -217,7 +217,7 @@ export default function UserProfile() {
                   : "",
               })
               .then(async ({ data }) => {
-                console.log("data after upload profile pic api call: ", data);
+                // console.log("data after upload profile pic api call: ", data);
                 setProfilePicAwsObj(data);
                 let oldLSData = JSON.parse(localStorage.getItem("user"));
                 let newLSData = {
@@ -227,10 +227,10 @@ export default function UserProfile() {
                   website,
                   profile_pic: data,
                 };
-                console.log("oldLSData", oldLSData);
-                console.log("new LS data", newLSData);
+                // console.log("oldLSData", oldLSData);
+                // console.log("new LS data", newLSData);
                 localStorage.setItem("user", JSON.stringify(newLSData));
-                console.log("about to dispatch new data to update state");
+                // console.log("about to dispatch new data to update state");
                 dispatch({
                   type: "LOGIN",
                   payload: newLSData,

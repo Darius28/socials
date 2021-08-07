@@ -28,13 +28,13 @@ export default function AuthNav() {
   };
 
   useEffect(() => {
-    console.log("authnav state changed!, state dependency");
-    console.log(state);
+    // console.log("authnav state changed!, state dependency");
+    // console.log(state);
     if (state.user) {
       setUserName(state.user.name);
     }
     if (state.user && state.user.profile_pic) {
-      console.log(state.user, state.user.profile_pic);
+      // console.log(state.user, state.user.profile_pic);
       setProfilePic(state.user.profile_pic.Location);
     }
   }, [state]);

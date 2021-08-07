@@ -28,7 +28,7 @@ export default function Login() {
         payload: data.user,
       });
       localStorage.setItem("user", JSON.stringify(data.user));
-      console.log(data);
+      // console.log(data);
       toast.success("Welcome.");
       setLoading(false);
       router.replace("/home");

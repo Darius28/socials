@@ -5,7 +5,7 @@ import ProfileOverview from "../UserProfile/ProfileOverview";
 
 export default function ProfileSearchResults({ onCloseHandler }) {
   const { state } = useContext(AuthContext);
-  console.log(state.matchedProfiles);
+  // console.log(state.matchedProfiles);
   return (
     <>
       <div

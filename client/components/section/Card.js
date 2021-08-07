@@ -17,7 +17,7 @@ export default function Card({ post, name, userProfilePic }) {
         `/api/post/${userId}/${postId}/like-post`
       );
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

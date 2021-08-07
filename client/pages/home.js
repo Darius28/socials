@@ -7,10 +7,10 @@ import { AuthContext } from "../context/auth-context";
 export default function Home() {
   const { state, dispatch } = useContext(AuthContext);
   useEffect(() => {
-    // console.log("in request");
+    // // console.log("in request");
     const searchProfiles = async () => {
       const { data } = await axios.get("/api/profile/search-profiles");
-      console.log(data);
+      // console.log(data);
       dispatch({
         type: "SET_ALL_USERS",
         payload: data.users,
@@ -21,7 +21,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    console.log("state.user: ", state.user);
+    // console.log("state.user: ", state.user);
   }, [state]);
 
   return (
